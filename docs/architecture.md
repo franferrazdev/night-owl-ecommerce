@@ -1,6 +1,6 @@
 # 🏗️ Arquitetura de Software · Night Owl E-Commerce
 
-Este documento especifica a topologia arquitetural, divisões de contexto e o fluxo entre o client-side e as rotas seguras do servidor [src].
+Este documento especifica a topologia arquitetural, divisões de contexto e o fluxo entre o client-side e as rotas seguras do servidor.
 
 ---
 
@@ -22,7 +22,7 @@ O ecossistema divide-se em duas grandes zonas com níveis de isolamento distinto
 
 # 🏗️ Software Architecture · Night Owl E-Commerce - English Version
 
-This document outlines the architectural topology, context boundaries, and the data flow between the client-side and secure server router [src].
+This document outlines the architectural topology, context boundaries, and the data flow between the client-side and secure server router.
 
 ---
 
