@@ -13,7 +13,7 @@ export function CatalogHeader() {
   }, []);
 
   return (
-    <header className="w-full max-w-5xl flex items-center justify-between py-4 border-b border-bs-slate-900">
+    <header className="w-full max-w-5xl flex items-center justify-between py-4 border-b border-slate-900">
       <h1 className="text-xl font-black tracking-wider bg-linear-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
         NIGHT OWL CATALOG
       </h1>

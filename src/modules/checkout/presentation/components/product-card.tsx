@@ -25,9 +25,9 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="flex flex-col bg-[#0F1626] border border-bs-slate-900 rounded-xl overflow-hidden shadow-lg hover:border-bs-slate-800/80 transition-all group">
+    <div className="flex flex-col bg-[#0F1626] border border-slate-900 rounded-xl overflow-hidden shadow-lg hover:border-slate-800/80 transition-all group">
       {/* Container de Imagem Otimizado contra Fadiga Visual */}
-      <div className="relative w-full aspect-square bg-slate-950 flex items-center justify-center p-4 border-b border-bs-slate-900 overflow-hidden">
+      <div className="relative w-full aspect-square bg-slate-950 flex items-center justify-center p-4 border-b border-slate-900 overflow-hidden">
         {/* eslint-disabled-next-line @next/next/no-img-element */}
         <img
           src={product.thumbnail}
@@ -53,7 +53,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mt-2 pt-3 border-t border-bs-slate-900">
+        <div className="flex items-center justify-between mt-2 pt-3 border-t border-slate-900">
           <span className="text-base font-black text-cyan-400">
             R$ {product.price.toFixed(2)}
           </span>
@@ -65,7 +65,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <button
           onClick={handleAddToCart}
           disabled={product.stock <= 0}
-          className="w-full mt-2 py-2.5 bg-slate-900 hover:bg-slate-800 border border-bs-slate-800 hover:border-cyan-500/30 text-slate-200 hover:text-cyan-400 text-xs font-bold tracking-wider uppercase rounded-lg transition-all disabled:opacity-20 disabled:hover:bg-slate-900 disabled:hover:text-slate-200 disabled:hover:border-bs-slate-800"
+          className="w-full mt-2 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 text-slate-200 hover:text-cyan-400 text-xs font-bold tracking-wider uppercase rounded-lg transition-all disabled:opacity-20 disabled:hover:bg-slate-900 disabled:hover:text-slate-200 disabled:hover:border-slate-800"
         >
           Adicionar ao Carrinho
         </button>

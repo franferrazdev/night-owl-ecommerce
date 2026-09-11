@@ -65,9 +65,9 @@ export function CartItemRow({ item }: CartItemRowProps) {
       </div>
 
       {/* Controles de AÇão e Exclusão */}
-      <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t border-bs-slate-900/50 sm:border-none">
+      <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t border-slate-900/50 sm:border-none">
         {/* Seletores de Quantidade */}
-        <div className="flex items-center bg-slate-950 border border-bs-slate-900 rounded-lg overflow-hidden pt-0.5">
+        <div className="flex items-center bg-slate-950 border border-slate-900 rounded-lg overflow-hidden pt-0.5">
           <button
             onClick={handleDecrement}
             disabled={item.quantity <= 1}
