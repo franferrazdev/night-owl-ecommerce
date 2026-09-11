@@ -6,7 +6,7 @@ import {
 /** Serviço Server-Side: Consome a API pública de produtos com tratamento defensivo contra bloqueios de rede ou loops de roteamento local do Next.js */
 export async function fetchCatalogProducts(): Promise<CatalogProduct[]> {
   try {
-    const response = await fetch("https://dummyjson.com/products", {
+    const response = await fetch("https://dummyjson.com/products?limit=100", {
       method: "GET",
       cache: "no-store",
       headers: {
@@ -41,6 +41,7 @@ export async function fetchCatalogProducts(): Promise<CatalogProduct[]> {
       price: prod.price,
       stock: prod.stock,
       thumbnail: prod.thumbnail,
+      category: prod.category,
     }));
   } catch (error) {
     const message =

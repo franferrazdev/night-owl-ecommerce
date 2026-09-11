@@ -6,6 +6,7 @@ export interface CatalogProduct {
   price: number;
   stock: number;
   thumbnail: string; // URL da imagem oficial do produto para renderização visual
+  category: string;
 }
 
 export interface DummyJSONProductResponse {
@@ -15,6 +16,7 @@ export interface DummyJSONProductResponse {
   price: number;
   stock: number;
   thumbnail: string;
+  category: string;
 }
 
 export interface DummyJSONCatalogResponse {
