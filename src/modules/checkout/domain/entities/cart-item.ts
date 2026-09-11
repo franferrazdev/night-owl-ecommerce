@@ -5,6 +5,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   stock: number; // Extoque máximo disponível retornado pela API
+  thumbnail?: string;
 }
 
 /** Calcula o valor subtotal de um item multiplicando o preço pela quantidade. */

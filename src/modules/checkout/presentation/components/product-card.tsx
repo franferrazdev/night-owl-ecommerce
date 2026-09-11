@@ -18,6 +18,7 @@ export function ProductCard({ product }: ProductCardProps) {
       title: product.title,
       price: product.price,
       stock: product.stock,
+      thumbnail: product.thumbnail,
     });
     // Abre o painel lateral automaticamente para feedback imediato do usuário
     toggleCart();
