@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { Heart } from "lucide-react";
 import { fetchCatalogProducts } from "@/modules/checkout/infra/services/fetch-catalog";
 import { CatalogHeader } from "@/modules/checkout/presentation/components/catalog-header";
 import { SearchFilters } from "@/modules/checkout/presentation/components/search-filters";
@@ -8,6 +9,7 @@ import { ProductCard } from "@/modules/checkout/presentation/components/product-
 import { ProductSkeleton } from "@/modules/checkout/presentation/components/product-skeleton";
 import { CartDrawer } from "@/modules/checkout/presentation/components/cart-drawer";
 import { CatalogProduct } from "@/modules/checkout/domain/entities/catalog-product";
+import { useWishlistStore } from "@/modules/checkout/presentation/store/wishlist-store";
 
 export default function CatalogPage() {
   const [products, setProducts] = useState<CatalogProduct[]>([]);
@@ -19,6 +21,9 @@ export default function CatalogPage() {
   const [selectedCategory, setSelectedCategory] = useState("todos");
   const [maxPrice, setMaxPrice] = useState(2000);
   const [sortBy, setSortBy] = useState("relevancia");
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+
+  const { favoriteIds } = useWishlistStore();
 
   useEffect(() => {
     async function loadCatalog() {
@@ -55,7 +60,12 @@ export default function CatalogPage() {
 
       const matchesPrice = product.price <= maxPrice;
 
-      return matchesSearch && matchesCategory && matchesPrice;
+      const matchesFavorites =
+        !showOnlyFavorites || favoriteIds.includes(product.id);
+
+      return (
+        matchesSearch && matchesCategory && matchesPrice && matchesFavorites
+      );
     });
 
     // Aplica a ordenação sobre o resultado filtrado
@@ -68,7 +78,15 @@ export default function CatalogPage() {
     }
 
     return filtered;
-  }, [products, searchQuery, selectedCategory, maxPrice, sortBy]);
+  }, [
+    products,
+    searchQuery,
+    selectedCategory,
+    maxPrice,
+    sortBy,
+    showOnlyFavorites,
+    favoriteIds,
+  ]);
 
   if (error) {
     throw new Error(`Não foi possível carregar o catálogo: ${error}`);
@@ -79,20 +97,44 @@ export default function CatalogPage() {
       {/* Barra de Topo do Cliente */}
       <CatalogHeader />
 
-      {/* Painel Controlado de Busca, Categorias e Preço */}
-      {!loading && (
-        <SearchFilters
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-          maxPrice={maxPrice}
-          onPriceChange={setMaxPrice}
-          sortBy={sortBy}
-          onSortByChance={setSortBy}
-          categories={dynamicCategories}
-        />
-      )}
+      <div className="w-full max-w-5xl flex flex-col gap-4">
+        {!loading && (
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                className={`flex items-center gap-2 px-4 py-2.5 border rounded-lg text-xs font-bold tracking-wider uppercase transition-all cursor-pointer ${
+                  showOnlyFavorites
+                    ? "bg-cyan-500/10 border-cyan-500/50 text-cyan-400"
+                    : "bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                <Heart
+                  size={14}
+                  className={showOnlyFavorites ? "fill-cyan-400" : ""}
+                />
+                <span>
+                  {showOnlyFavorites
+                    ? "Ver Todos os Produtos"
+                    : `Meus Favoritos (${favoriteIds.length})`}
+                </span>
+              </button>
+            </div>
+
+            <SearchFilters
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              maxPrice={maxPrice}
+              onPriceChange={setMaxPrice}
+              sortBy={sortBy}
+              onSortByChance={setSortBy}
+              categories={dynamicCategories}
+            />
+          </div>
+        )}
+      </div>
 
       {/* Grid Dinâmico de Produtos Filtrados */}
       <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-2">
