@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { Heart } from "lucide-react";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
+import { useWishlistStore } from "@/modules/checkout/presentation/store/wishlist-store";
 import { CatalogProduct } from "@/modules/checkout/domain/entities/catalog-product";
 
 interface ProductCardProps {
@@ -9,6 +12,15 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem, toggleCart } = useCartStore();
+  const { toggleFavorite, favoriteIds } = useWishlistStore();
+  const [mounted, setMounted] = useState(false);
+
+  // Evita divergência de hidratação ao ler o estado persistido do Zustand
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isFavorited = mounted ? favoriteIds.includes(product.id) : false;
 
   const handleAddToCart = () => {
     // Adapta o contrato do catálogo para a entidade estrita do carrinho
@@ -25,7 +37,25 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="flex flex-col bg-[#0F1626] border border-slate-900 rounded-xl overflow-hidden shadow-lg hover:border-slate-800/80 transition-all group">
+    <div className="flex flex-col bg-[#0F1626] border border-slate-900 rounded-xl overflow-hidden shadow-lg hover:border-slate-800/80 transition-all group relative">
+      {/* Botão Flutuante de Favoritos */}
+      <button
+        onClick={() => toggleFavorite(product.id)}
+        className="absolute top-3 right-3 z-10 p-2 bg-slate-950/60 hover:bg-slate-950/90 border border-bs-slate-900 rounded-lg text-slate-400 hover:text-cyan-400 transition-all cursor-pointer group/heart"
+        aria-label={
+          isFavorited ? "Remover dos favoritos" : "Adicionar aos favoritos"
+        }
+      >
+        <Heart
+          size={15}
+          className={`${
+            isFavorited
+              ? "fill-cyan-400 text-cyan-400 scale-110"
+              : "text-slate-400 group-hover/heart:scale-110"
+          } transition-transform duration-200`}
+        />
+      </button>
+
       {/* Container de Imagem Otimizado contra Fadiga Visual */}
       <div className="relative w-full aspect-square bg-slate-950 flex items-center justify-center p-4 border-b border-slate-900 overflow-hidden">
         {/* eslint-disabled-next-line @next/next/no-img-element */}
