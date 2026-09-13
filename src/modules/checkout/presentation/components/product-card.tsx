@@ -37,11 +37,11 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="flex flex-col bg-[#0F1626] border border-slate-900 rounded-xl overflow-hidden shadow-lg hover:border-slate-800/80 transition-all group relative">
+    <div className="flex flex-col bg-white dark:bg-[#0F1626] border border-slate-200 dark:border-slate-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl dark:hover:border-slate-800/80 transition-all group relative">
       {/* Botão Flutuante de Favoritos */}
       <button
         onClick={() => toggleFavorite(product.id)}
-        className="absolute top-3 right-3 z-10 p-2 bg-slate-950/60 hover:bg-slate-950/90 border border-bs-slate-900 rounded-lg text-slate-400 hover:text-cyan-400 transition-all cursor-pointer group/heart"
+        className="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-slate-950/60 hover:bg-white dark:hover:bg-slate-950/90 border border-slate-200 dark:border-slate-900 rounded-lg text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 transition-all cursor-pointer group/heart shadow-xs"
         aria-label={
           isFavorited ? "Remover dos favoritos" : "Adicionar aos favoritos"
         }
@@ -50,14 +50,14 @@ export function ProductCard({ product }: ProductCardProps) {
           size={15}
           className={`${
             isFavorited
-              ? "fill-cyan-400 text-cyan-400 scale-110"
-              : "text-slate-400 group-hover/heart:scale-110"
+              ? "fill-blue-600 text-blue-600 dark:fill-cyan-400 dark:text-cyan-400 scale-110"
+              : "text-slate-400 dark:text-slate-500 group-hover/heart:scale-110"
           } transition-transform duration-200`}
         />
       </button>
 
-      {/* Container de Imagem Otimizado contra Fadiga Visual */}
-      <div className="relative w-full aspect-square bg-slate-950 flex items-center justify-center p-4 border-b border-slate-900 overflow-hidden">
+      {/* Container de Imagem */}
+      <div className="relative w-full aspect-square bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4 border-b border-slate-100 dark:border-slate-900 overflow-hidden">
         {/* eslint-disabled-next-line @next/next/no-img-element */}
         <img
           src={product.thumbnail}
@@ -76,18 +76,18 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Conteúdo Textual com Informações Fluidas */}
       <div className="flex flex-col flex-1 p-5 gap-2">
-        <h3 className="text-sm font-semibold text-slate-200 line-clamp-1 group-hover:text-cyan-400 transition-colors">
+        <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 line-clamp-1 group-hover:text-electric-blue dark:group-hover:text-electric-cyan transition-colors">
           {product.title}
         </h3>
-        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed flex-1">
+        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed flex-1">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mt-2 pt-3 border-t border-slate-900">
-          <span className="text-base font-black text-cyan-400">
+        <div className="flex items-center justify-between mt-2 pt-3 border-t border-slate-100 dark:border-slate-900">
+          <span className="text-base font-black text-electric-blue dark:text-electric-cyan">
             R$ {product.price.toFixed(2)}
           </span>
-          <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">
+          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider">
             Estoque: {product.stock}
           </span>
         </div>
@@ -95,7 +95,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <button
           onClick={handleAddToCart}
           disabled={product.stock <= 0}
-          className="w-full mt-2 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 text-slate-200 hover:text-cyan-400 text-xs font-bold tracking-wider uppercase rounded-lg transition-all disabled:opacity-20 disabled:hover:bg-slate-900 disabled:hover:text-slate-200 disabled:hover:border-slate-800"
+          className="w-full mt-2 py-2.5 bg-electric-blue hover:bg-electric-vivid dark:bg-slate-900 dark:hover:bg-slate-800 border border-electric-blue dark:border-slate-800 text-white dark:text-slate-200 dark:hover:border-electric-cyan text-xs font-bold tracking-wider uppercase rounded-lg transition-all disabled:opacity-20"
         >
           Adicionar ao Carrinho
         </button>

@@ -1,7 +1,11 @@
 @import "tailwindcss";
 
+@custom-variant dark (.dark &);
+
 @theme {
-  --animate-slide-in-from-right: slide-in-from-right 0.2s ease-out forwards;
+  --color-electric-blue: #2563eb;
+  --color-electric-cyan: #06b6d4;
+  --color-electric-vivid: #1d4ed8;
 
   @keyframes slide-in-from-right {
     0% {
@@ -11,4 +15,11 @@
       transform: translateX(0%);
     }
   }
+}
+
+* {
+  transition-property:
+    color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
 }
