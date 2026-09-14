@@ -7,6 +7,12 @@
   --color-electric-cyan: #06b6d4;
   --color-electric-vivid: #1d4ed8;
 
+  /* Classes de animação utilitárias para o HTML ler no Next.js */
+  --animate-fade-in: fadeIn 0.5s ease-out forwards;
+  --animate-slide-in-from-right: slide-in-from-right 0.2s
+    cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+  /* Keyframes físicos mapeado no motor do Tailwind v4 */
   @keyframes slide-in-from-right {
     0% {
       transform: translateX(100%);
@@ -15,8 +21,18 @@
       transform: translateX(0%);
     }
   }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 }
 
+/* Suaviza a transição de cores do Dia para a Noite */
 * {
   transition-property:
     color, background-color, border-color, text-decoration-color, fill, stroke;

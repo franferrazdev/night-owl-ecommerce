@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { fetchCatalogProducts } from "@/modules/checkout/infra/services/fetch-catalog";
 import { SearchFilters } from "@/modules/checkout/presentation/components/search-filters";
 import { ProductCard } from "@/modules/checkout/presentation/components/product-card";
+import { ProductCarousel } from "@/modules/checkout/presentation/components/product-carousel";
 import { ProductSkeleton } from "@/modules/checkout/presentation/components/product-skeleton";
 import { CartDrawer } from "@/modules/checkout/presentation/components/cart-drawer";
 import { CatalogProduct } from "@/modules/checkout/domain/entities/catalog-product";
@@ -47,6 +48,11 @@ export default function CatalogPage() {
     }
     loadCatalog();
   }, []);
+
+  // Extrai de forma fixa os primeiros 5 produtos da API
+  const featuredProducts = useMemo(() => {
+    return products.slice(0, 5);
+  }, [products]);
 
   // Extrai a lista de categorias únicas disponíveis no payload real da API
   const dynamicCategories = useMemo(() => {
@@ -133,6 +139,14 @@ export default function CatalogPage() {
           </button>
         </div>
       </header>
+
+      {!loading &&
+        !showOnlyFavorites &&
+        searchQuery === "" &&
+        selectedCategory === "todos" && (
+          <ProductCarousel featuredProducts={featuredProducts} />
+        )}
+
       <div className="w-full max-w-5xl flex flex-col gap-4">
         {!loading && (
           <div className="flex flex-col gap-4">
