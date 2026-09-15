@@ -51,7 +51,11 @@ export default function CatalogPage() {
 
   // Extrai de forma fixa os primeiros 5 produtos da API
   const featuredProducts = useMemo(() => {
-    return products.slice(0, 5);
+    if (products.length === 0) return [];
+
+    return [...products]
+      .sort((a, b) => (b.discountPercentage || 0) - (a.discountPercentage || 0))
+      .slice(0, 5);
   }, [products]);
 
   // Extrai a lista de categorias únicas disponíveis no payload real da API

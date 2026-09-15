@@ -17,6 +17,7 @@ export interface CatalogProduct {
   category: string;
   rating?: number; // Metadados de nota média
   reviews?: ProductReview[]; // Array estrito de comentários reais
+  discountPercentage?: number; // Algoritmo de desconto
 }
 
 export interface DummyJSONProductResponse {
@@ -29,6 +30,7 @@ export interface DummyJSONProductResponse {
   category: string;
   rating?: number;
   reviews?: ProductReview[];
+  discountPercentage?: number; // Mapeia a propriedade nativa da API externa
 }
 
 export interface DummyJSONCatalogResponse {
