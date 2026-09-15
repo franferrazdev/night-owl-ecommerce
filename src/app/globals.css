@@ -32,6 +32,15 @@
   }
 }
 
+/* Variáveis de Suporte de Cores para o Módulo de Toasts e Fundos Globais */
+:root {
+  --background: #ffffff --foreground: #0f172a;
+}
+
+.dark {
+  --background: #0f172a --foreground: #f8fafc;
+}
+
 /* Suaviza a transição de cores do Dia para a Noite */
 * {
   transition-property:

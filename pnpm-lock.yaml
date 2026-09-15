@@ -6,9 +6,6 @@ importers:
   .:
     configDependencies: {}
     packageManagerDependencies:
-      '@pnpm/exe':
-        specifier: 12.3.4
-        version: 12.3.4
       pnpm:
         specifier: 12.3.4
         version: 12.3.4
@@ -59,11 +56,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@pnpm/exe@12.3.4':
-    resolution: {integrity: sha512-Rq7JokWAyYF9IFfn8zofB/q2AgnZlmoMuH5fMHB2+Ta61I9aD7sNm+woZpx6iH+5vb38chdSoYRvOtSqlH72YQ==}
-    engines: {node: '>=18.*'}
-    hasBin: true
-
   pnpm@12.3.4:
     resolution: {integrity: sha512-lhqkH7B32joEpEHZ+OFevAyW2o73ELLrZ7+e58sGEOq9SPH9hfUc/+c4RnhfoPh8VqOocqHYk/hEZ0G1zORUVw==}
     engines: {node: '>=18.*'}
@@ -94,17 +86,6 @@ snapshots:
 
   '@pnpm/exe.win32-x64@12.3.4':
     optional: true
-
-  '@pnpm/exe@12.3.4':
-    optionalDependencies:
-      '@pnpm/exe.darwin-arm64': 12.3.4
-      '@pnpm/exe.darwin-x64': 12.3.4
-      '@pnpm/exe.linux-arm64': 12.3.4
-      '@pnpm/exe.linux-arm64-musl': 12.3.4
-      '@pnpm/exe.linux-x64': 12.3.4
-      '@pnpm/exe.linux-x64-musl': 12.3.4
-      '@pnpm/exe.win32-arm64': 12.3.4
-      '@pnpm/exe.win32-x64': 12.3.4
 
   pnpm@12.3.4:
     optionalDependencies:
@@ -146,6 +127,9 @@ importers:
       react-dom:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
+      react-hot-toast:
+        specifier: ^2.6.0
+        version: 2.6.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       stripe:
         specifier: ^22.6.1
         version: 22.6.1(@types/node@20.19.43)
@@ -1889,6 +1873,11 @@ packages:
     resolution: {integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==}
     engines: {node: '>= 0.4'}
 
+  goober@2.1.19:
+    resolution: {integrity: sha512-U7veizMqxyKlM58+Z5j2ngJBH/r9siDmxpvNxSw0PylF6WQvrASJEZrxh1hidRBJc2jqoBVSyOban5u8m+6Rxg==}
+    peerDependencies:
+      csstype: ^3.0.10
+
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
@@ -2511,6 +2500,13 @@ packages:
     resolution: {integrity: sha512-rVprimfGBG3DR+Tq0IQG2DT5PxKth1WIGDmj5yPmlzr4YBe7uyE+Du4oVqTDXZSHGGGXRtTJEGSSePyQCMBglQ==}
     peerDependencies:
       react: ^19.2.8
+
+  react-hot-toast@2.6.0:
+    resolution: {integrity: sha512-bH+2EBMZ4sdyou/DPrfgIouFpcRLCJ+HoCA32UoAYHn6T3Ur5yfcDCeSr5mwldl6pFOsiocmrXMuoCJ1vV8bWg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -4746,6 +4742,10 @@ snapshots:
       define-properties: 1.2.1
       gopd: 1.2.0
 
+  goober@2.1.19(csstype@3.2.3):
+    dependencies:
+      csstype: 3.2.3
+
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
@@ -5362,6 +5362,13 @@ snapshots:
     dependencies:
       react: 19.2.8
       scheduler: 0.27.0
+
+  react-hot-toast@2.6.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      csstype: 3.2.3
+      goober: 2.1.19(csstype@3.2.3)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
   react-is@16.13.1: {}
 

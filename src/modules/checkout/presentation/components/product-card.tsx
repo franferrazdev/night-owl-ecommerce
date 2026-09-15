@@ -6,6 +6,7 @@ import { Heart } from "lucide-react";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 import { useWishlistStore } from "@/modules/checkout/presentation/store/wishlist-store";
 import { CatalogProduct } from "@/modules/checkout/domain/entities/catalog-product";
+import { toast } from "react-hot-toast";
 
 interface ProductCardProps {
   product: CatalogProduct;
@@ -33,15 +34,31 @@ export function ProductCard({ product }: ProductCardProps) {
       stock: product.stock,
       thumbnail: product.thumbnail,
     });
+    // Dispara o Alerta Flutuante de Sucesso na Tela
+    toast.success(`${product.title} adicionado ao carrinho com sucesso!`, {
+      style: { border: "1px solid var(--color-electric-blue)" },
+    });
     // Abre o painel lateral automaticamente para feedback imediato do usuário
     toggleCart();
+  };
+
+  const handleFavoriteClick = () => {
+    toggleFavorite(product.id);
+    const checkingFavorite = favoriteIds.includes(product.id);
+
+    // Identifica se adicionou ou removeu da lista de favoritos
+    if (checkingFavorite) {
+      toast.error(`${product.title} removido dos favoritos.`);
+    } else {
+      toast.success(`${product.title} salvo nos favoritos!`);
+    }
   };
 
   return (
     <div className="flex flex-col bg-white dark:bg-[#0F1626] border border-slate-200 dark:border-slate-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl dark:hover:border-slate-800/80 transition-all group relative">
       {/* Botão Flutuante de Favoritos */}
       <button
-        onClick={() => toggleFavorite(product.id)}
+        onClick={handleFavoriteClick}
         className="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-slate-950/60 hover:bg-white dark:hover:bg-slate-950/90 border border-slate-200 dark:border-slate-900 rounded-lg text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 transition-all cursor-pointer group/heart shadow-xs"
         aria-label={
           isFavorited ? "Remover dos favoritos" : "Adicionar aos favoritos"
