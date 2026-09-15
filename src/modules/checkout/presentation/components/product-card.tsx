@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
@@ -76,9 +77,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Conteúdo Textual com Informações Fluidas */}
       <div className="flex flex-col flex-1 p-5 gap-2">
-        <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 line-clamp-1 group-hover:text-electric-blue dark:group-hover:text-electric-cyan transition-colors">
-          {product.title}
-        </h3>
+        <Link href={`/product/${product.id}`} className="group/title block">
+          <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 line-clamp-1 group-hover/title:text-electric-blue dark:group-hover/title:text-electric-cyan transition-colors cursor-pointer">
+            {product.title}
+          </h3>
+        </Link>
         <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed flex-1">
           {product.description}
         </p>
