@@ -3,6 +3,7 @@
 import { ShoppingCart } from "lucide-react";
 import { CatalogProduct } from "@/modules/checkout/domain/entities/catalog-product";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
+import { toast } from "react-hot-toast";
 
 interface ProductBuyBarProps {
   product: CatalogProduct;
@@ -20,6 +21,8 @@ export function ProductBuyBar({ product }: ProductBuyBarProps) {
       stock: product.stock,
       thumbnail: product.thumbnail,
     });
+    // Dispara o Alerta Flutuante na tela de detalhes
+    toast.success(`${product.title} adicionado ao seu carrinho!`);
     toggleCart();
   };
 
