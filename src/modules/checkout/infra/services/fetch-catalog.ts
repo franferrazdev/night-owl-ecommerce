@@ -42,6 +42,7 @@ export async function fetchCatalogProducts(): Promise<CatalogProduct[]> {
       stock: prod.stock,
       thumbnail: prod.thumbnail,
       category: prod.category,
+      discountPercentage: prod.discountPercentage,
     }));
   } catch (error) {
     const message =
