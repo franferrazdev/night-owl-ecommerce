@@ -64,7 +64,7 @@ describe("Componente Unitário: CartDrawer", () => {
     expect(
       screen.getByText("Casaco Premium Midnight Noir"),
     ).toBeInTheDocument();
-    expect(screen.getByText("R$R$300.00")).toBeInTheDocument();
+    expect(screen.getByText(/R\$\s?300\.00/i)).toBeInTheDocument();
   });
 
   test("Deve disparar a função de atualizar quantidade ao clicar no botão de incremento", () => {
