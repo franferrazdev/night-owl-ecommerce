@@ -5,6 +5,7 @@ import { Heart, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { fetchCatalogProducts } from "@/modules/checkout/infra/services/fetch-catalog";
 import { SearchFilters } from "@/modules/checkout/presentation/components/search-filters";
+import { CategoryBar } from "@/modules/checkout/presentation/components/category-bar";
 import { ProductCard } from "@/modules/checkout/presentation/components/product-card";
 import { ProductCarousel } from "@/modules/checkout/presentation/components/product-carousel";
 import { ProductSkeleton } from "@/modules/checkout/presentation/components/product-skeleton";
@@ -144,6 +145,7 @@ export default function CatalogPage() {
         </div>
       </header>
 
+      {/* Carrossel de Destaques */}
       {!loading &&
         !showOnlyFavorites &&
         searchQuery === "" &&
@@ -151,6 +153,16 @@ export default function CatalogPage() {
           <ProductCarousel featuredProducts={featuredProducts} />
         )}
 
+      {/* Esteira de Categorias Rápidas */}
+      {!loading && !showOnlyFavorites && (
+        <CategoryBar
+          categories={dynamicCategories}
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+        />
+      )}
+
+      {/* Filtros de Busca */}
       <div className="w-full max-w-5xl flex flex-col gap-4">
         {!loading && (
           <div className="flex flex-col gap-4">
