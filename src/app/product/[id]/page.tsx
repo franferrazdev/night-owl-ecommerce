@@ -56,7 +56,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             )}
           </div>
 
-          {/* Especificações e Transações */}
+          {/* Especificações e Pagamentos */}
           <div className="flex flex-col flex-1 w-full gap-5 min-w-0">
             <div className="flex flex-col gap-1">
               <span className="text-[10px] font-bold text-electric-blue dark:text-electric-cyan tracking-widest uppercase">
