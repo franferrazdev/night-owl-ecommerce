@@ -3,6 +3,7 @@
 import { ShoppingCart, X } from "lucide-react";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 import { CartItemRow } from "@/modules/checkout/presentation/components/cart-item-row";
+import Link from "next/link";
 
 export function CartDrawer() {
   const { items, isOpen, toggleCart, getTotalAmount } = useCartStore();
@@ -54,12 +55,13 @@ export function CartDrawer() {
               </span>
             </div>
 
-            <button
-              onClick={() => console.log("Iniciando checkout seguro...")}
-              className="w-full py-3 px-4 bg-linear-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-shadow-slate-950 font-bold text-sm tracking-wide rounded-md shadow-[0_0_15px_rgba(34, 211, 238, 0.2)] hover:shadow-[0_0_20px_rgba(34, 211, 238, 0.4)] active:scale-[0.98] transition-all cursor-pointer"
+            <Link
+              href="/checkout"
+              onClick={toggleCart}
+              className="w-full py-3 px-4 bg-linear-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-shadow-slate-950 font-bold text-sm tracking-wide rounded-md shadow-[0_0_15px_rgba(34, 211, 238, 0.2)] text-center block text-white select-none transition-all cursor-pointer active:scale-[0.98]"
             >
               Finalizar Compra
-            </button>
+            </Link>
           </div>
         )}
       </div>
