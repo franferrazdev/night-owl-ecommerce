@@ -38,10 +38,14 @@ export default function RootLayout({ children }: LayoutProps) {
             toastOptions={{
               duration: 3000,
               className:
-                "font-sans text-xs font-bold border transition-colors duration-200",
-              style: {
-                background: "var(--background)",
-                color: "var(--foreground)",
+                "font-sans text-xs font-bold border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 shadow-md",
+              success: {
+                className:
+                  "font-sans text-xs font-bold border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 shadow-md",
+              },
+              error: {
+                className:
+                  "font-sans text-xs font-bold border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 shadow-md",
               },
             }}
           />

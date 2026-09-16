@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { Heart, Sun, Moon } from "lucide-react";
+import { Heart, Sun, Moon, User } from "lucide-react";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 import { fetchCatalogProducts } from "@/modules/checkout/infra/services/fetch-catalog";
 import { SearchFilters } from "@/modules/checkout/presentation/components/search-filters";
 import { CategoryBar } from "@/modules/checkout/presentation/components/category-bar";
@@ -13,6 +14,7 @@ import { CartDrawer } from "@/modules/checkout/presentation/components/cart-draw
 import { CatalogProduct } from "@/modules/checkout/domain/entities/catalog-product";
 import { useWishlistStore } from "@/modules/checkout/presentation/store/wishlist-store";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
+import { useAuthStore } from "@/modules/checkout/presentation/store/auth-store";
 
 export default function CatalogPage() {
   const [products, setProducts] = useState<CatalogProduct[]>([]);
@@ -31,6 +33,8 @@ export default function CatalogPage() {
   const { toggleCart, getTotalItemsCount } = useCartStore();
   const { favoriteIds } = useWishlistStore();
   const [mounted, setMounted] = useState(false);
+
+  const { isAuthenticated, user } = useAuthStore();
 
   useEffect(() => {
     setMounted(true);
@@ -142,6 +146,31 @@ export default function CatalogPage() {
               </span>
             )}
           </button>
+
+          {mounted &&
+            (isAuthenticated ? (
+              <Link
+                href="/profile"
+                className="fl
+               items-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold tracking-wider uppercase transition-all"
+              >
+                <User
+                  size={14}
+                  className="text-electric-blue dark:text-electric-cyan"
+                />
+                <span className="max-w-22.5 truncate hidden sm:inline">
+                  {user?.name}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                href="/auth"
+                className="flex items-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold tracking-wider uppercase transition-all cursor-pointer"
+              >
+                <User size={14} className="text-slate-400" />
+                <span className="hidden sm:inline">Entrar</span>
+              </Link>
+            ))}
         </div>
       </header>
 
