@@ -43,6 +43,7 @@ export async function fetchCatalogProducts(): Promise<CatalogProduct[]> {
       thumbnail: prod.thumbnail,
       category: prod.category,
       discountPercentage: prod.discountPercentage,
+      rating: prod.rating, // Passa a nota real preenchida para o catálogo
     }));
   } catch (error) {
     const message =
