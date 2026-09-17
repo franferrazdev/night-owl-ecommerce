@@ -4,6 +4,7 @@ import { ShoppingCart, X } from "lucide-react";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 import { CartItemRow } from "@/modules/checkout/presentation/components/cart-item-row";
 import Link from "next/link";
+import { CouponInput } from "./coupon-input";
 
 export function CartDrawer() {
   const { items, isOpen, toggleCart, getTotalAmount } = useCartStore();
@@ -48,6 +49,10 @@ export function CartDrawer() {
         {/* Rodapé Transacional com Botão de Ação */}
         {items.length > 0 && (
           <div className="pt-4 border-t border-slate-800 flex flex-col gap-4 mt-auto">
+
+{/* Módulo de Cupons de Desconto Reativos */}
+<CouponInput />
+
             <div className="flex items-center justify-between text-slate-300 font-medium">
               <span>Valor Total:</span>
               <span className="text-xl font-bold text-cyan-400">
