@@ -82,6 +82,28 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </span>
             </div>
 
+            {/* Renderiza a matemática reversa do valor sem desconto e a tag % OFF */}
+            {product.discountPercentage && product.discountPercentage > 0 ? (
+              <div className="flex flex-col gap-1.5 mt-2">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block w-full">
+                  Vantagem Promocional:
+                </span>
+                <div className="flex items-baseline gap-1.5 mt-2">
+                  {/* Calcula o preço original bruto real baseado na taxa percentual */}
+                  <span className="text-sm text-slate-400 dark:text-slate-500 line-through font-medium">
+                    R$
+                    {(
+                      (product.price * 100) /
+                      (100 - product.discountPercentage)
+                    ).toFixed(2)}
+                  </span>
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-blue-600 dark:bg-cyan-500 text-white dark:text-slate-950 px-2 py-0.5 rounded-sm shadow-xs">
+                    {Math.round(product.discountPercentage)}% OFF
+                  </span>
+                </div>
+              </div>
+            ) : null}
+
             {/* Barra Transacional Homologada de Cliente */}
             <ProductBuyBar product={product} />
           </div>

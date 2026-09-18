@@ -45,6 +45,7 @@ export async function fetchProductDetail(
       thumbnail: prod.thumbnail,
       category: prod.category,
       rating: prod.rating,
+      discountPercentage: prod.discountPercentage || 0,
       reviews: prod.reviews || [],
     };
   } catch (error) {
