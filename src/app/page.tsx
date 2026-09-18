@@ -90,13 +90,14 @@ export default function CatalogPage() {
     });
 
     // Aplica a ordenação sobre o resultado filtrado
-    if (sortBy === "preco-crescente") {
+    if (sortBy === "preco-crescente")
       return [...filtered].sort((a, b) => a.price - b.price); // Menor para Maior
-    }
 
-    if (sortBy === "preco-decrescente") {
+    if (sortBy === "preco-decrescente")
       return [...filtered].sort((a, b) => b.price - a.price); // Maior para Menor
-    }
+
+    if (sortBy === "relevancia")
+      return [...filtered].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
 
     return filtered;
   }, [
@@ -136,7 +137,7 @@ export default function CatalogPage() {
 
           <button
             onClick={toggleCart}
-            className="relative p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-7 dark:text-slate-300 hover:text-blue-500 dark:hover:text-electric-cyan rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200"
+            className="relative p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-electric-cyan rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200"
           >
             <span>Meu Carrinho</span>
 
@@ -151,7 +152,7 @@ export default function CatalogPage() {
             (isAuthenticated ? (
               <Link
                 href="/profile"
-                className="fl
+                className="flex
                items-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold tracking-wider uppercase transition-all"
               >
                 <User
@@ -224,7 +225,7 @@ export default function CatalogPage() {
               maxPrice={maxPrice}
               onPriceChange={setMaxPrice}
               sortBy={sortBy}
-              onSortByChance={setSortBy}
+              onSortByChange={setSortBy}
               categories={dynamicCategories}
             />
           </div>
