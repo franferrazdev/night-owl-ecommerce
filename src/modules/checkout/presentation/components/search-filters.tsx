@@ -16,7 +16,7 @@ interface SearchFiltersProps {
   maxPrice: number;
   onPriceChange: (value: number) => void;
   sortBy: string;
-  onSortByChance: (value: string) => void;
+  onSortByChange: (value: string) => void;
   categories: string[];
 }
 
@@ -28,7 +28,7 @@ export function SearchFilters({
   maxPrice,
   onPriceChange,
   sortBy,
-  onSortByChance,
+  onSortByChange,
   categories,
 }: SearchFiltersProps) {
   return (
@@ -97,7 +97,7 @@ export function SearchFilters({
           />
           <select
             value={sortBy}
-            onChange={(e) => onSortByChance(e.target.value)}
+            onChange={(e) => onSortByChange(e.target.value)}
             className="w-full pl-10 pr-10 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:border-electric-blue dark:focus:border-electric-cyan/50 rounded-lg text-xs text-slate-800 dark:text-slate-200 outline-hidden transition-all cursor-pointer appearance-none"
           >
             <option value="relevancia">Relevância</option>
