@@ -15,6 +15,7 @@ import { CatalogProduct } from "@/modules/checkout/domain/entities/catalog-produ
 import { useWishlistStore } from "@/modules/checkout/presentation/store/wishlist-store";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 import { useAuthStore } from "@/modules/checkout/presentation/store/auth-store";
+import { Footer } from "@/modules/checkout/presentation/components/footer";
 
 export default function CatalogPage() {
   const [products, setProducts] = useState<CatalogProduct[]>([]);
@@ -254,6 +255,9 @@ export default function CatalogPage() {
 
       {/* Drawer do Carrinho */}
       <CartDrawer />
+
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }
