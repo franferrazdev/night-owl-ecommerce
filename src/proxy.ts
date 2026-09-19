@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /** Filtro Edge Server-Side: Intercepta as requisições de rotas dinamicamente no servidor antes que o HTML ou o JavaScript cheguem ao navegador do cliente. */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const sessionCookie = request.cookies.get("night_owl_session");
   const isAuthenticated = !!sessionCookie?.value;
 

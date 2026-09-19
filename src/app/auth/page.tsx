@@ -33,7 +33,6 @@ export default function AuthPage() {
   const { registerUser, loginWithHash, isAuthenticated, user, logout } =
     useAuthStore();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
 
   const [mode, setMode] = useState<"login" | "cadastro">("login");
 
@@ -42,13 +41,10 @@ export default function AuthPage() {
   const [password, setPassword] = useState("@NightOwl2026");
 
   useEffect(() => {
-    setMounted(true);
     if (isAuthenticated) {
       router.push("/profile");
     }
   }, [isAuthenticated, router]);
-
-  if (!mounted) return null;
 
   const handleClearCache = () => {
     logout();

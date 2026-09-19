@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { Heart, Layers, ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 import { useWishlistStore } from "@/modules/checkout/presentation/store/wishlist-store";
@@ -13,15 +13,18 @@ interface ProductCardProps {
   product: CatalogProduct;
 }
 
+const emptySubscription = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem, toggleCart } = useCartStore();
   const { toggleFavorite, favoriteIds } = useWishlistStore();
-  const [mounted, setMounted] = useState(false);
-
-  // Evita divergência de hidratação ao ler o estado persistido do Zustand
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscription,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
 
   const isFavorited = useMemo(() => {
     if (!mounted) return false;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -12,7 +12,6 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuthStore } from "@/modules/checkout/presentation/store/auth-store";
-import { mdxCompile } from "next/dist/build/swc/generated-native";
 
 // Mock de dados de pedidos transacionais
 const mockOrders = [
@@ -34,14 +33,18 @@ const mockOrders = [
   },
 ];
 
+const emptySubscription = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export default function ProfilePage() {
   const { user, logout } = useAuthStore();
-  const [mounted, setMounted] = useState(false);
 
-  // Evita Hydration Mismatch ao sincronizar estados com a árvore de componentes
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscription,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
 
   if (!mounted) return null;
 
