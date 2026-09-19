@@ -13,14 +13,12 @@ import {
 } from "lucide-react";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 import { useAuthStore } from "@/modules/checkout/presentation/store/auth-store";
-import { processPayment } from "@/modules/checkout/infra/services/process-payment";
 import { toast } from "react-hot-toast";
 
 export default function CheckoutPage() {
   const { items, getTotalAmount } = useCartStore();
   const { user, isAuthenticated } = useAuthStore();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Estados dos Métodos de Pagamento e Copie e Cola
@@ -39,17 +37,19 @@ export default function CheckoutPage() {
   const [cardCVV, setCardCVV] = useState("");
 
   useEffect(() => {
-    setMounted(true);
-    // Redireciona de volta se o carrinho estiver vazio ou se não estiver logado
-    if (mounted && (items.length === 0 || !isAuthenticated)) {
+    const hasNoAccess = items.length === 0 || !isAuthenticated;
+
+    if (hasNoAccess) {
       toast.error(
         "Acesso restrito! Faça o login e adicione itens ao carrinho.",
       );
       router.push("/");
     }
-  }, [items, isAuthenticated, mounted, router]);
+  }, [items.length, isAuthenticated, router]);
 
-  if (!mounted || items.length === 0) return null;
+  if (items.length === 0 || !isAuthenticated) {
+    return null;
+  }
 
   // Dados fictícios
   const handleApplyMockData = () => {
@@ -82,25 +82,67 @@ export default function CheckoutPage() {
     }
 
     try {
-      setLoading(false);
       setLoading(true);
 
-      const response = await processPayment({
-        email: user?.email || "anonimo@example.com",
-        itemsCount: items.length,
-        totalAmount: getTotalAmount(),
-      });
+      if (paymentMethod === "card") {
+        const payloadItems = items.map((item) => ({
+          id: String(item.id),
+          title: String(item.title),
+          price: Number(item.price),
+          thumbnail: item.thumbnail ? String(item.thumbnail) : undefined,
+          quantity: Number(item.quantity),
+        }));
 
-      if (response.success) {
-        toast.success("Pagamento aprovado e processado com sucesso!");
-        // Guarda temporareamente o ID do pedido no SessionStorage para a tela de sucesso ler
-        sessionStorage.setItem("last_order_id", response.orderId);
-        router.push("/checkout/success");
-      } else {
-        toast.error("Falha ao processar o pagamento.");
+        const res = await fetch("/api/checkout/session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: payloadItems,
+            email: user?.email || "dev@nightowl.com",
+          }),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(
+            errorData.error || `Erro de rede: status ${res.status}`,
+          );
+        }
+
+        const session = await res.json();
+
+        if (session.url) {
+          toast.success("Redirecionando para o ambiente seguro do Stripe...");
+          // Guarda o ID temporário do checkout no SessionStorage para controle local
+          sessionStorage.setItem(
+            "last_order_id",
+            session.id || `owl-${Date.now()}`,
+          );
+          window.location.href = session.url;
+          return;
+        } else {
+          throw new Error(
+            "Sessão de pagamento retornou sem URL de redirecionamento.",
+          );
+        }
+      }
+
+      //  O fluxo do PIX continua operando no modelo híbrido via QR Code local
+      if (paymentMethod === "pix") {
+        toast.success("Pagamento via PIX processado com sucesso!");
+        sessionStorage.setItem(
+          "last_order_id",
+          `owl-pix-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+        );
+        router.push("/order/success");
       }
     } catch (err) {
-      toast.error("Erro inesperado no barramento de pagamento.");
+      const message =
+        err instanceof Error ? err.message : "Erro inesperado no faturamento.";
+      toast.error(message);
+      console.error("Erro capturado no fluxo do checkout:", err);
     } finally {
       setLoading(false);
     }
@@ -348,8 +390,8 @@ border-slate-200 dark:border-slate-800 rounded-lg p-2 flex items-center justify-
                       Escaneie o QR Code acima
                     </span>
                     <p className="text-[10px] text-slate-400 max-w-70">
-                      O QR Code acima simula um pagamento real. O sistema dará
-                      a baixa e aprovação automática ao confirmar.
+                      O QR Code acima simula um pagamento real. O sistema dará a
+                      baixa e aprovação automática ao confirmar.
                     </p>
                   </div>
                   <button

@@ -1,27 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, ShoppingCart } from "lucide-react";
-import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
+
+const emptySubscription = () => () => {};
+
+const getOrderId = () => {
+  if (typeof window === "undefined") {
+    return "owl-order-0000";
+  }
+
+  return sessionStorage.getItem("last_order_id");
+};
+
+const getServerOrderId = () => "owl-order-0000";
 
 export default function SuccessPage() {
-  const [orderId, setOrderId] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-  const { clearCart } = useCartStore();
-
+  const orderId = useSyncExternalStore(
+    emptySubscription,
+    getOrderId,
+    getServerOrderId,
+  );
   useEffect(() => {
-    setMounted(true);
-    // Recupera o ID gerado pelo servidor simulado e limpa a sessão em seguida
-    const savedId = sessionStorage.getItem("last_order_id");
-    setOrderId(savedId || "owl-order-0000");
-
     return () => {
       sessionStorage.removeItem("last_order_id");
     };
-  }, [clearCart]);
-
-  if (!mounted) return null;
+  }, []);
 
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-[#060B18] text-slate-900 dark:text-slate-100 font-sans flex items-center justify-center p-6 transition-colors duration-200">

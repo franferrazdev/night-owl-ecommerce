@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useSyncExternalStore } from "react";
 import { Heart, Sun, Moon, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -16,6 +16,10 @@ import { useWishlistStore } from "@/modules/checkout/presentation/store/wishlist
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 import { useAuthStore } from "@/modules/checkout/presentation/store/auth-store";
 import { Footer } from "@/modules/checkout/presentation/components/footer";
+
+const emptySubscription = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export default function CatalogPage() {
   const [products, setProducts] = useState<CatalogProduct[]>([]);
@@ -33,12 +37,15 @@ export default function CatalogPage() {
 
   const { toggleCart, getTotalItemsCount } = useCartStore();
   const { favoriteIds } = useWishlistStore();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscription,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
 
   const { isAuthenticated, user } = useAuthStore();
 
   useEffect(() => {
-    setMounted(true);
     async function loadCatalog() {
       try {
         setLoading(true);

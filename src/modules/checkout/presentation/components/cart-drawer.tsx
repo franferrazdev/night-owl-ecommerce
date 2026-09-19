@@ -49,9 +49,8 @@ export function CartDrawer() {
         {/* Rodapé Transacional com Botão de Ação */}
         {items.length > 0 && (
           <div className="pt-4 border-t border-slate-800 flex flex-col gap-4 mt-auto">
-
-{/* Módulo de Cupons de Desconto Reativos */}
-<CouponInput />
+            {/* Módulo de Cupons de Desconto Reativos */}
+            <CouponInput />
 
             <div className="flex items-center justify-between text-slate-300 font-medium">
               <span>Valor Total:</span>
@@ -61,7 +60,7 @@ export function CartDrawer() {
             </div>
 
             <Link
-              href="/checkout"
+              href="/order"
               onClick={toggleCart}
               className="w-full py-3 px-4 bg-linear-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-shadow-slate-950 font-bold text-sm tracking-wide rounded-md shadow-[0_0_15px_rgba(34, 211, 238, 0.2)] text-center block text-white select-none transition-all cursor-pointer active:scale-[0.98]"
             >
