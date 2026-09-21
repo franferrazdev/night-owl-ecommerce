@@ -13,6 +13,9 @@ export function ProductBuyBar({ product }: ProductBuyBarProps) {
   const { addItem, toggleCart } = useCartStore();
 
   const handleAddCart = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("last_purchased_product_id", product.id);
+    }
     addItem({
       id: product.id,
       externalId: product.externalId,
