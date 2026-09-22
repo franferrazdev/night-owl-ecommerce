@@ -87,7 +87,10 @@ export async function POST(request: Request) {
           // Atualiza o status do pedido principal para pago (PAID)
           await tx.order.update({
             where: { id: existingOrder.id },
-            data: { status: "PAID" },
+            data: {
+              status: "PAID",
+              userId: "user-sandbox-01",
+            },
           });
 
           // Decrementa o estoque físico real de cada item comprado de forma segura
