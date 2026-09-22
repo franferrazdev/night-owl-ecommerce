@@ -34,6 +34,12 @@ As capturas abaixo ilustram o ecossistema completo em tempo de execução:
 
 ![Página de Sucesso e Geração de Recibos] (public/readme-gallery/05-success-payment.png)
 
+## 🌌 Funcionalidades Adicionadas
+
+- **🤖 Máquina de Estados Logística (Sandbox)**: Simulação de barramento logístico automatizado em background que responde reativamente a portões de UX (_UX Gates_) destravando botões sequenciais e formulários locais de avaliação na página de sucesso.
+- **📋 Histórico Atômico de Compras (Perfil)**: Painel de perfil integrado ao Supabase via Prisma que carrega dinamicamente fotos (thumbnails), contadores de quantidade e links cruzados estáveis para as páginas internas do catálogo.
+- **🔒 Trava Antirrepetição de Rastreamento**: Protocolo baseado em chaves de sessão que bloqueia a reexecução de timers e revalida de forma rígida o cache do servidor ao navegar de volta para o perfil.
+
 ## 🧪 Ambiente de Homologação (Guia de Testes para Recrutadores)
 
 Para validar o fluxo de faturamento Full-Stack sem a necessidade de inserir dados reais, utilize as credenciais de simulação fornecidas pela Stripe diretamente na janela criptografada do checkout seguro:
@@ -63,6 +69,8 @@ src/
         ├── domain/  #Entidades puras de negócios e casos de uso isolados
         ├── infra/  # Gateways (Stripe-Config) e ORM (Prisma-Client)
         ├── presentation/   # Componentes de interface do usuário, stores locais e estilos visuais
+    ├── profile/
+        ├── infra/  # Server Actions assíncronas para busca de faturamento
 ```
 
 ### 📝 Licença e Direitos Autorais
@@ -105,6 +113,12 @@ The screenshots below illustrate the complete ecosystem at runtime:
 
 ![Success Page and Receipt Generation](public/readme-gallery/05-success-payment.png)
 
+## 🌌 Features Added
+
+- **🤖 Logistical State Machine (Sandbox)**: Simulated automated background logistical pipeline responding reactively to UX Gates, onlocking sequential buttons and local feedback rating forms on the success page.
+- **📋 Atomic Purchase History (Profile)**: Profile panel integrated with Supabase via Prisma that dynamically loads item thumbnail, quantity counters, and stable cross-links to catalog detail pages.
+- **🔒 Anti-Repetition Tracking Lock**: Session-key protocol that blocks timer re-runs and tightly revalidates server cache when navigating back to the user account profile.
+
 ### 🧪 Sandbox Environment (Recruiter Testing Guide)
 
 To validate the Full-Stack billing flow without inserting real data, use the global simulation credentials provided by Stripe directly inside the encrypted secure checkout window:
@@ -130,11 +144,13 @@ To validate the Full-Stack billing flow without inserting real data, use the glo
 ```text
 src/
 ├── app/                  # Physical routing and public API endpoints
-└── modules/
-    └── checkout/
+├── modules/
+    ├── checkout/
         ├── domain/       # Pure business entities and isolated use cases
         ├── infra/        # Infrastructure gateways (Stripe-Config) and ORM (Prisma-Client)
-        └── presentation/ # UI Components, local stores, and visual styles
+        ├── presentation/ # UI Components, local stores, and visual styles
+    ├── profile/
+        ├── infra/  # Asynchronous Server Actions for billing retrieval
 ```
 
 ### 📝 License & Copyright

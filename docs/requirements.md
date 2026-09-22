@@ -29,6 +29,20 @@ Este documento descreve as regras de negócio, fluxos transacionais e os mecanis
 
 - **Governança de Catálogo:** O microsserviço no Next.js consultará os preços oficiais direto na base de dados (Prisma) ou na API de origem para remontar o cálculo do preço final no servidor. O sistema rejeitará qualquer tentativa de injeção de preços customizados pelo client-side.
 
+### 3. Máquina de Estados Logística e UX Gates (Sandbox)
+
+- **Automação de Rastreamento**: O sistema deve simular o andamento logístico de forma autônoma e temporizada a partir do estado inicial de faturamento (`PREPARING`). O progresso deve avançar automaticamente para `SHIPPED` (Enviado) e parar obrigatoriamente no status `DELIVERED` (Entregue).
+- **Confirmação Manual**: Ao atingir o status `DELIVERED`, a automação é pausada. A interface deve exibir o botão "Confirmar Recebimento", exigindo a interação do usuário para transacionar a máquina para o estado `CONFIRMED` (Recebido).
+- **Gatilho de Avaliação**: O status `CONFIRMED` deve destravar o botão "Avaliar Pedido". Ao ser clicado, este botão avança o fluxo para a etapa `REVIEWING` (Avaliar), tornando visíveis as estrelas de feedback local e o link externo de redirecionamento.
+- **Trava de Conclusão**: Assim que o usuário registrar a nota pelas estrelas ou clicar para avaliar na página do produto, o status final deve ser atualizado para `REVIEWED` (Avaliado). O fluxo deve ser permanentemente bloqueado contra reexecuções, limpando os tokens ativos da sessão do navegador.
+
+### 4. Histórico Dinâmico de Pedidos (Perfil)
+
+- **Persistência Relacional**: Todos os pedidos e subitens finalizados no checkout devem ser gravados fisicamente no canco de dados (Supabase) via Prisma, associados ao identificador exclusivo do cliente sandbox (`user-sandbox-01`).
+- **Exibição Rica de Dados**: A listagem de compras no perfil deve carregar dinamicamente a foto (thumbnail) do item, o valor total formatado em moeda local (BRL), a data da compra formatada via API `Intl` e o título do produto em destaque.
+- **Navegabilidade Cruzada**: O título do produto em destaque deve atuar como um link clicável e seguro apontando para a rota dinâmica do catálogo (`/product/[id]`), permitindo navegação reversa contínua.
+- **Bloqueio contra Loops**: Se um pedido retornar do banco com o status `REVIEWED`, a interface de perfil deve exibir a label textual como "Avaliado". O botão lateral de acompanhar rastreamento deve ser convertido em um elemento estático desabilitado (`disabled` e `cursor-not-allowed`) para impedir que o recrutador reinicie os cronômetros da sandbox.
+
 ---
 
 # 📝 System Requirements · Transactional E-commerce (Night Owl) - English Version
@@ -61,3 +75,17 @@ This document outlines the business rules, transactional flows, and security mec
 ### 2. Strict Price Validation to Prevent Fraud
 
 - **Catalog Governance:** The Next.js microservice will query official prices directly from the database (Prisma) or the souce API to recalculate the final price on the server. The system will reject any attempt to inject custom prices from the client side.
+
+### 3. Logistical State Machine and UX Gates (Sandbox)
+
+- **Tracking Automation**: The system must simulate logistical progress automously from the initial billing state (`PREPARING`). The progress must automatically advance to `SHIPPED` and strictly stop at the `DELIVERED` status.
+- **Manual Confirmation**: Upon reaching `DELIVERED`, the automation is paused. The interface must display a "Confirmar Recebimento" button, requiring user interaction to transition the state machine to `CONFIRMED`.
+- **Review Trigger**: The `CONFIRMED` status must unlock the "Avaliar Pedido" button. Clicking this button advances the flow to the `REVIEWING` stage, rendering local star feedback and the external redirection link.
+- **Completion Lock**: As soon as the user logs the rating or evaluates on the product page, the final status must update to `REVIEWED`. The flow must be permanently blocked from re-running, clearing active tracking tokens from the session.
+
+### 4. Dynamic Order History (Profile)
+
+- **Relational Persistence**: All orders and sub-items finalized at checkout must be physically stored in the database (Supabase) via Prisma, associated with the client ID (`user-sandbox-01`).
+- **Rich Data Display**: The history list on the profile page must dynamically load the item's thumbnail, the total amount formatted in local currency (BRL), and the highlighted product title.
+- **Cross Navigation:** The highlighted product title must act as a clickable anchor link pointing to the catalog dynamic route (`/product/[id]`).
+- **Loop Blocking**: If an order status returns as `REVIEWED`, the profile interface must display the text label as "Avaliado" and the tracking button must be converted into a disabled static element (`disabled` and `cursor-not-allowed`).
