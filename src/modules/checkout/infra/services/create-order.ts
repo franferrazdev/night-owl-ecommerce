@@ -33,62 +33,74 @@ export async function createOrder(
   }
   try {
     // Executa a criação de forma transacional e atômica no banco de dados
-    const result = await prisma.$transaction(async (tx) => {
-      // Garante a existência do usuário Sandbox no banco
-      await tx.user.upsert({
-        where: { id: input.userId },
-        update: {}, // Não faz nada se o usuário sandbox já existir
-        create: {
-          id: input.userId,
-          email: "sandbox@nightowl.com",
-          name: "Recrutador",
-        },
-      });
-      // Faz o upsert de cada produto do carrinho antes de criar os itens do pedido
-      for (const item of input.items) {
-        await tx.product.upsert({
-          where: { id: item.id },
-          update: {
-            title: item.title,
-            price: item.price,
-            thumbnail: item.thumbnail,
-          },
+    const result = await prisma.$transaction(
+      async (
+        tx: Omit<
+          typeof prisma,
+          | "$connect"
+          | "$disconnect"
+          | "$on"
+          | "$transaction"
+          | "$use"
+          | "$extends"
+        >,
+      ) => {
+        // Garante a existência do usuário Sandbox no banco
+        await tx.user.upsert({
+          where: { id: input.userId },
+          update: {}, // Não faz nada se o usuário sandbox já existir
           create: {
-            id: item.id,
-            externalId: Math.floor(100000 + Math.random() * 900000),
-            title: item.title,
-            price: item.price,
-            stock: 99, // Falback para sandbox
-            thumbnail: item.thumbnail,
+            id: input.userId,
+            email: "sandbox@nightowl.com",
+            name: "Recrutador",
           },
         });
-      }
-      // Cria o registro principal do pedido na tabela 'orders'
-      const newOrder = await tx.order.create({
-        data: {
-          trackingCode: input.trackingCode,
-          status: "PREPARING" as OrderStatus, // Inicia na primeira etapa da máquina de estados
-          totalAmount: input.totalAmount,
-          userId: input.userId,
-        },
-      });
+        // Faz o upsert de cada produto do carrinho antes de criar os itens do pedido
+        for (const item of input.items) {
+          await tx.product.upsert({
+            where: { id: item.id },
+            update: {
+              title: item.title,
+              price: item.price,
+              thumbnail: item.thumbnail,
+            },
+            create: {
+              id: item.id,
+              externalId: Math.floor(100000 + Math.random() * 900000),
+              title: item.title,
+              price: item.price,
+              stock: 99, // Falback para sandbox
+              thumbnail: item.thumbnail,
+            },
+          });
+        }
+        // Cria o registro principal do pedido na tabela 'orders'
+        const newOrder = await tx.order.create({
+          data: {
+            trackingCode: input.trackingCode,
+            status: "PREPARING" as OrderStatus, // Inicia na primeira etapa da máquina de estados
+            totalAmount: input.totalAmount,
+            userId: input.userId,
+          },
+        });
 
-      // Mapeia e cria todos os itens vinculados na tabela 'order_items'
-      const orderItemsData = input.items.map((item) => ({
-        orderId: newOrder.id,
-        productId: item.id,
-        title: item.title,
-        thumbnail: item.thumbnail,
-        price: item.price,
-        quantity: item.quantity,
-      }));
+        // Mapeia e cria todos os itens vinculados na tabela 'order_items'
+        const orderItemsData = input.items.map((item) => ({
+          orderId: newOrder.id,
+          productId: item.id,
+          title: item.title,
+          thumbnail: item.thumbnail,
+          price: item.price,
+          quantity: item.quantity,
+        }));
 
-      await tx.orderItem.createMany({
-        data: orderItemsData,
-      });
+        await tx.orderItem.createMany({
+          data: orderItemsData,
+        });
 
-      return newOrder;
-    });
+        return newOrder;
+      },
+    );
 
     return { success: true, orderId: result.id };
   } catch (error) {

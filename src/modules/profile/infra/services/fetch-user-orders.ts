@@ -2,6 +2,7 @@
 
 import { prisma } from "@/modules/checkout/infra/database/prisma-client";
 import { OrderStatus } from "@/modules/checkout/domain/order-status";
+import { Order, OrderItem } from "@prisma/client";
 
 export interface PreparedOrderProduct {
   id: string;
@@ -19,6 +20,10 @@ export interface PreparedOrder {
   totalAmount: number;
   createdAt: Date;
   items: PreparedOrderProduct[];
+}
+
+interface OrderWithItems extends Order {
+  items: OrderItem[];
 }
 
 /** Server Action que busca o histórico completo de pedidos faturados de um usuário.
@@ -44,7 +49,7 @@ export async function fetchUserOrders(
     });
 
     // Mapeamento explícito para garantir conformidade estrita com o tipo de domínio OrderStatus
-    return orders.map((order) => ({
+    return (orders as OrderWithItems[]).map((order: OrderWithItems) => ({
       id: order.id,
       trackingCode: order.trackingCode,
       status: order.status as OrderStatus,

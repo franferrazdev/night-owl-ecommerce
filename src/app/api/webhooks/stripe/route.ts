@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/modules/checkout/infra/stripe/stripe-config";
 import { prisma } from "@/modules/checkout/infra/database/prisma-client";
 import Stripe from "stripe";
+import { Prisma } from "@prisma/client";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
       }
 
       // Atualização Atômica: Marca o pedido como pago e dá baixa automática no estoque físico dos produtos
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         // Atualiza o status do pedido principal para pago (PAID)
         await tx.order.update({
           where: { id: existingOrder.id },
