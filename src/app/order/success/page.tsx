@@ -126,7 +126,7 @@ export default function SuccessPage() {
 
         // Persiste o estado Enviado no banco automaticamente
         updateOrderStatus(activeCode!, "SHIPPED").catch(console.error);
-      }, 4000);
+      }, 6000);
 
       timer2 = setTimeout(() => {
         if (!isMounted) return;

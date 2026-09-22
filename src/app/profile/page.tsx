@@ -24,8 +24,9 @@ import { OrderStatus } from "@/modules/checkout/domain/order-status";
 export const dynamic = "force-dynamic";
 
 // Dicionário auxiliar para traduzir o status do banco para a UI
-const getStatusLabel = (status: OrderStatus) => {
-  switch (status) {
+const getStatusLabel = (status: OrderStatus | string) => {
+  const cleanStatus = (status || "").toUpperCase();
+  switch (cleanStatus) {
     case "PREPARING":
       return "Preparando";
     case "SHIPPED":
@@ -37,14 +38,15 @@ const getStatusLabel = (status: OrderStatus) => {
     case "REVIEWING":
       return "Avaliar";
     case "REVIEWED":
-      return "Concluído";
+      return "Avaliado";
     default:
-      return status;
+      return "Preparando";
   }
 };
 
-const getStatusColor = (status: OrderStatus) => {
-  switch (status) {
+const getStatusColor = (status: OrderStatus | string) => {
+  const cleanStatus = (status || "").toUpperCase();
+  switch (cleanStatus) {
     case "PREPARING":
       return "text-amber-500 bg-amber-500/10 border-amber-500/20";
     case "SHIPPED":
