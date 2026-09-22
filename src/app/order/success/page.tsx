@@ -3,7 +3,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { OrderStatus } from "@/modules/checkout/domain/order-status";
 import { DeliveryStepper } from "@/modules/checkout/presentation/components/delivery-stepper";
 import { SatisfactionRating } from "@/modules/checkout/presentation/components/satisfaction-rating";
@@ -17,7 +17,8 @@ import {
   ShoppingCart,
   StarHalf,
 } from "lucide-react";
-import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
+import { updateOrderStatus } from "@/modules/checkout/infra/services/update-order-status";
+import { fetchUserOrders } from "@/modules/profile/infra/services/fetch-user-orders";
 
 const emptySubscription = () => () => {};
 
@@ -48,6 +49,7 @@ export default function SuccessPage() {
 
   // Captura dados do produto
   const searchParams = useSearchParams();
+  const router = useRouter(); // Inicializa o roteador no Next.js
   const urlProductId = searchParams.get("productId");
 
   const storeProductId = useSyncExternalStore(
@@ -66,27 +68,80 @@ export default function SuccessPage() {
   const [copied, setCopied] = useState<boolean>(false);
 
   useEffect(() => {
-    // Gera o código localizador aleatório único no client-side
-    const randomDigits = Math.floor(100000 + Math.random() * 900000);
-    setTrackingCode(`BR-${randomDigits}`);
+    let isMounted = true;
+    let timer1: NodeJS.Timeout;
+    let timer2: NodeJS.Timeout;
 
-    // Avança os estágios de forma autônoma apenas até DELIVERED
-    const timer1 = setTimeout(() => {
-      setCurrentStatus((prev) => (prev === "PREPARING" ? "SHIPPED" : prev));
-      toast.success("Logística: O seu pedido foi despachado e está a caminho!");
-    }, 4000);
+    async function initializeAndCheckStatus() {
+      // Captura o trackingCode vindo da URL se o usuário veio da tela de perfil
+      const urlTrackingCode = searchParams.get("trackingCode");
+      // Recupera ou define de forma consistente o código localizador
+      const storedCode = sessionStorage.getItem("active_tracking_code");
 
-    const timer2 = setTimeout(() => {
-      setCurrentStatus((prev) => (prev === "SHIPPED" ? "DELIVERED" : prev));
-      toast.success(
-        "Logística: Pacote entregue! Por favor, confirme o recebimento para liberar as avaliações.",
+      let activeCode = urlTrackingCode || storedCode;
+
+      if (!activeCode) {
+        // Inicializa o trackingCode único gerado na sessão
+        const randomDigits = Math.floor(100000 + Math.random() * 900000);
+        activeCode = `BR-${randomDigits}`;
+        sessionStorage.setItem("active_tracking_code", activeCode);
+      } else if (urlTrackingCode) {
+        // Alinha a sessão com o código aberto do histórico
+        sessionStorage.setItem("active_tracking_code", urlTrackingCode);
+      }
+
+      if (isMounted) setTrackingCode(activeCode);
+
+      // Verifica o estado real do pedido salvo no Supabase
+      const userOrders = await fetchUserOrders("user-sandbox-01");
+      const currentOrderInDb = userOrders.find(
+        (o) => o.trackingCode === activeCode,
       );
-    }, 8000);
+
+      if (currentOrderInDb) {
+        if (isMounted) setCurrentStatus(currentOrderInDb.status);
+
+        // Se o pedido já avançou além do estágio automático, bloqueia o re-disparo dos timers
+        const blockList: OrderStatus[] = [
+          "DELIVERED",
+          "CONFIRMED",
+          "REVIEWING",
+          "REVIEWED",
+        ];
+        if (blockList.includes(currentOrderInDb.status)) {
+          return;
+        }
+      }
+
+      // Sandbox Automation - Atualiza a interface E grava as transições no Supabase de forma autônoma
+      timer1 = setTimeout(() => {
+        if (!isMounted) return;
+        setCurrentStatus("SHIPPED");
+        toast.success(
+          "Logística: O seu pedido foi despachado e está a caminho!",
+        );
+
+        // Persiste o estado Enviado no banco automaticamente
+        updateOrderStatus(activeCode!, "SHIPPED");
+      }, 4000);
+
+      timer2 = setTimeout(() => {
+        if (!isMounted) return;
+        setCurrentStatus("DELIVERED");
+        toast.success(
+          "Logística: Pacote entregue! Por favor, confirme o recebimento.",
+        );
+
+        // Persiste o estado Entregue no banco automaticamente
+        updateOrderStatus(activeCode!, "DELIVERED");
+      }, 8000);
+    }
+    initializeAndCheckStatus();
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      sessionStorage.removeItem("last_order_id");
+      isMounted = false;
+      if (timer1) clearTimeout(timer1);
+      if (timer2) clearTimeout(timer2);
     };
   }, [orderId]);
 
@@ -103,27 +158,38 @@ export default function SuccessPage() {
   };
 
   // Usuário clica em Confirmar Recebimento -> Vai para CONFIRMED
-  const handleConfirmDelivery = () => {
+  const handleConfirmDelivery = async () => {
     if (currentStatus === "DELIVERED") {
       setCurrentStatus("CONFIRMED");
       toast.success(
         "Sucesso: Recebimento confirmado! Clique em Avaliar para prosseguir.",
       );
+
+      // Persiste o estado CONFIRMED no Supabase
+      await updateOrderStatus(trackingCode, "CONFIRMED");
     }
   };
 
   // Usuário clica em Avaliar Pedido -> Avança para a etapa de preenchimento (REVIEWING)
-  const handleGoToReviewStage = () => {
+  const handleGoToReviewStage = async () => {
     if (currentStatus === "CONFIRMED") {
-      setCurrentStatus("REVIEWING" as OrderStatus);
+      setCurrentStatus("REVIEWING");
+
+      // Persiste o estado REVIEWING no Supabase
+      await updateOrderStatus(trackingCode, "REVIEWING");
     }
   };
 
   // Usuário vota localmente pelas estrelas -> Completa a etapa REVIEWED
-  const handleLocalRating = (selectedStars: number) => {
+  const handleLocalRating = async (selectedStars: number) => {
     setRating(selectedStars);
     setCurrentStatus("REVIEWED"); // Avança para a última etapa automaticamente
     toast.success(`Obrigado pela nota de ${selectedStars} estrelas!`);
+
+    // Persiste o estado final de conclusão no Supabase
+    await updateOrderStatus(trackingCode, "REVIEWED");
+    // Limpa o código da sessão para permitir futuras compras
+    sessionStorage.removeItem("active_tracking_code");
   };
 
   return (
@@ -210,9 +276,12 @@ export default function SuccessPage() {
           {currentStatus === "REVIEWING" && (
             <Link
               href={`/product/${productId}?review=true#reviews-form`}
-              onClick={() => {
+              onClick={async () => {
                 setCurrentStatus("REVIEWED");
                 sessionStorage.removeItem("last_purchased_product_id");
+
+                // Grava que o produto foi para avaliação externa antes de mudar de página
+                await updateOrderStatus(trackingCode, "REVIEWED");
               }}
               className="w-full py-3.5 bg-electric-blue hover:bg-electric-vivid text-white text-xs font-black tracking-wider uppercase rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md active:scale-[0.99]"
             >
@@ -228,13 +297,16 @@ export default function SuccessPage() {
             <span>Continuar Comprando</span>
           </Link>
 
-          <Link
-            href="/profile"
-            className="text-xs font-bold text-slate-400 hover:text-electric-blue dark:hover:text-electric-cyan uppercase tracking-wider transition-colors flex items-center justify-center gap-1"
+          <button
+            onClick={() => {
+              router.refresh(); // Destrói o Router Cache do Next.js imediatamente
+              router.push("/profile"); // Navega de forma limpa puxando o dado fresco do Supabase
+            }}
+            className="w-full py-2 flex items-center justify-center gap-1 text-xs font-bold text-slate-400 hover:text-electric-blue dark:hover:text-electric-cyan uppercase tracking-wider transition-colors cursor-pointer"
           >
             <span>Ver Meus Pedidos</span>
             <ArrowRight size={12} />
-          </Link>
+          </button>
         </div>
       </div>
     </div>
