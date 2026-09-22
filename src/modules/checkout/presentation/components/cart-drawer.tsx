@@ -21,14 +21,21 @@ export function CartDrawer() {
     try {
       const firstProductId = items[0].id; // Captura o ID do primeiro produto comprado
 
-      //  Alimenta a persistência de sessão para que a página /order saiba qual item processar
+      // Gera e amarra o código localizador unificado logo na saída do carrinho
+      const randomDigits = Math.floor(100000 + Math.random() * 900000);
+      const trackingCode = `BR-${randomDigits}`;
+
+      //  Alimenta a persistência de sessão para que as páginas seguintes compartilhem o mesmo token
+      sessionStorage.setItem("active_tracking_code", trackingCode);
       sessionStorage.setItem("last_purchased_product_id", firstProductId);
 
       // Fecha a gaveta lateral de forma limpa antes de mudar de tela
       toggleCart();
 
       // Redireciona o cliente para a rota de pagamento/checkout do site (/order)
-      router.push(`/order?productId=${firstProductId}`);
+      router.push(
+        `/order?productId=${firstProductId}&trackingCode=${trackingCode}`,
+      );
     } catch {
       toast.error("Falha de comunicação interna ao inicializar o checkout.");
     }

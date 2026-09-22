@@ -91,26 +91,29 @@ export default function SuccessPage() {
       }
 
       if (isMounted) setTrackingCode(activeCode);
+      try {
+        // Verifica o estado real do pedido salvo no Supabase
+        const userOrders = await fetchUserOrders("user-sandbox-01");
+        const currentOrderInDb = userOrders.find(
+          (o) => o.trackingCode === activeCode,
+        );
 
-      // Verifica o estado real do pedido salvo no Supabase
-      const userOrders = await fetchUserOrders("user-sandbox-01");
-      const currentOrderInDb = userOrders.find(
-        (o) => o.trackingCode === activeCode,
-      );
+        if (currentOrderInDb) {
+          if (isMounted) setCurrentStatus(currentOrderInDb.status);
 
-      if (currentOrderInDb) {
-        if (isMounted) setCurrentStatus(currentOrderInDb.status);
-
-        // Se o pedido já avançou além do estágio automático, bloqueia o re-disparo dos timers
-        const blockList: OrderStatus[] = [
-          "DELIVERED",
-          "CONFIRMED",
-          "REVIEWING",
-          "REVIEWED",
-        ];
-        if (blockList.includes(currentOrderInDb.status)) {
-          return;
+          // Se o pedido já avançou além do estágio automático, bloqueia o re-disparo dos timers
+          const blockList: OrderStatus[] = [
+            "DELIVERED",
+            "CONFIRMED",
+            "REVIEWING",
+            "REVIEWED",
+          ];
+          if (blockList.includes(currentOrderInDb.status)) {
+            return;
+          }
         }
+      } catch (error) {
+        console.error("Falha ao ler registros de faturamento na nuvem:", error);
       }
 
       // Sandbox Automation - Atualiza a interface E grava as transições no Supabase de forma autônoma
@@ -122,7 +125,7 @@ export default function SuccessPage() {
         );
 
         // Persiste o estado Enviado no banco automaticamente
-        updateOrderStatus(activeCode!, "SHIPPED");
+        updateOrderStatus(activeCode!, "SHIPPED").catch(console.error);
       }, 4000);
 
       timer2 = setTimeout(() => {
@@ -133,7 +136,7 @@ export default function SuccessPage() {
         );
 
         // Persiste o estado Entregue no banco automaticamente
-        updateOrderStatus(activeCode!, "DELIVERED");
+        updateOrderStatus(activeCode!, "DELIVERED").catch(console.error);
       }, 8000);
     }
     initializeAndCheckStatus();
@@ -143,7 +146,7 @@ export default function SuccessPage() {
       if (timer1) clearTimeout(timer1);
       if (timer2) clearTimeout(timer2);
     };
-  }, [orderId]);
+  }, [orderId, searchParams]);
 
   // Função nativa para copiar o texto para a área de transferência do usuário
   const handleCopyCode = async () => {
