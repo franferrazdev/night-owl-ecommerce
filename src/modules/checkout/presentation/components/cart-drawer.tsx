@@ -3,13 +3,36 @@
 import { ShoppingCart, X } from "lucide-react";
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 import { CartItemRow } from "@/modules/checkout/presentation/components/cart-item-row";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CouponInput } from "./coupon-input";
+import { toast } from "react-hot-toast";
 
 export function CartDrawer() {
-  const { items, isOpen, toggleCart, getTotalAmount } = useCartStore();
+  const { items, isOpen, toggleCart, getTotalAmount, clearCart } =
+    useCartStore();
+  const router = useRouter();
 
   if (!isOpen) return null;
+
+  // Lógica transacional que unifica o clique de compra à persistência do Supabase
+  const handleCheckout = () => {
+    if (items.length === 0) return;
+
+    try {
+      const firstProductId = items[0].id; // Captura o ID do primeiro produto comprado
+
+      //  Alimenta a persistência de sessão para que a página /order saiba qual item processar
+      sessionStorage.setItem("last_purchased_product_id", firstProductId);
+
+      // Fecha a gaveta lateral de forma limpa antes de mudar de tela
+      toggleCart();
+
+      // Redireciona o cliente para a rota de pagamento/checkout do site (/order)
+      router.push(`/order?productId=${firstProductId}`);
+    } catch {
+      toast.error("Falha de comunicação interna ao inicializar o checkout.");
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm transition-opacity">
@@ -59,13 +82,12 @@ export function CartDrawer() {
               </span>
             </div>
 
-            <Link
-              href="/order"
-              onClick={toggleCart}
+            <button
+              onClick={handleCheckout}
               className="w-full py-3 px-4 bg-linear-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-shadow-slate-950 font-bold text-sm tracking-wide rounded-md shadow-[0_0_15px_rgba(34, 211, 238, 0.2)] text-center block text-white select-none transition-all cursor-pointer active:scale-[0.98]"
             >
               Finalizar Compra
-            </Link>
+            </button>
           </div>
         )}
       </div>

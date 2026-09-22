@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/modules/checkout/infra/stripe/stripe-config";
 import { prisma } from "@/modules/checkout/infra/database/prisma-client";
 import Stripe from "stripe";
-import { error } from "next/dist/build/output/log";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -51,9 +50,10 @@ export async function POST(request: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
 
     try {
-      // Busca o pedido inicial pendente mapeado anteriormente no banco
-      const existingOrder = await prisma.order.findUnique({
-        where: { stripeSessionId: session.id },
+      const sessionTrackingCode = session.metadata?.trackingCode || "";
+      // Busca pelo trackingCode no schema unificado e inclui a tabela relacional
+      const existingOrder = await prisma.order.findFirst({
+        where: { trackingCode: sessionTrackingCode },
         include: { items: true },
       });
 

@@ -6,10 +6,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Mapeamento dos status sincronozados com a máquina do domínio
 enum OrderStatus {
   PENDING
   PAID
   FAILED
+  PREPARING
+  SHIPPED
+  DELIVERED
+  CONFIRMED
+  REVIEWING
+  REVIEWED
 }
 
 model Product {
@@ -18,6 +25,7 @@ model Product {
   title String
   price Float
   stock Int
+  thumbnail String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   orderItems  OrderItem[]
@@ -25,27 +33,51 @@ model Product {
   @@map("products")
 }
 
-model Order {
+// Modelo simples de usuário
+model User {
   id  String  @id @default(uuid())
-  stripeSessionId String  @unique
-  status  OrderStatus @default(PENDING)
+  email String  @unique
+  name  String?
+  orders  Order[] // Relacionamento inverso 9Um usuário tem muitos pedidos
+
+  @@map("users")
+}
+
+// Modelo de Pedidos vinculado ao Usuário
+model Order{
+  id  String  @id @default(uuid())
+  trackingCode  String  @unique // Formato BR-XXXXXX gerado no checkout
+  status  OrderStatus @default(PREPARING)
   totalAmount Float
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  // Relacionamento com o usuário 
+  userId  String
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relacionamento um-para-muitos com os itens do pedido
   items OrderItem[]
+
+  @@index([userId])
+  @@map("orders")
 }
 
 model OrderItem {
   id  String  @id @default(uuid())
-  orderId String
-  productId String
-  quantity  Int
-  price Float @default(0.0)
-  createdAt DateTime  @default(now())
+  productId String // ID do produto original do catálogo
+  title String // Título do produto salvo historicamente
+  thumbnail String  // Imagem do produto salvo historicamente
+  quantity  Int @default(1)
+  price Float @default(0.0) // Preço unitário faturado (evita que mudanças futuras alterem o histórico)
 
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  // Relacionamento muitos-para-um com o Pedido Pai
+  orderId String
   product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("order_items")
+  @@index([orderId])
 }
+
 

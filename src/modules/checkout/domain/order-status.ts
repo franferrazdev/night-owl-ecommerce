@@ -1,4 +1,7 @@
 export type OrderStatus =
+  | "PENDING"
+  | "PAID"
+  | "FAILED"
   | "PREPARING"
   | "SHIPPED"
   | "DELIVERED"

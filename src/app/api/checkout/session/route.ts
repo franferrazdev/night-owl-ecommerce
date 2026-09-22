@@ -14,6 +14,14 @@ interface CheckoutRequestBody {
   email: string;
 }
 
+interface ValidatedItem {
+  productId: string;
+  title: string;
+  thumbnail: string;
+  price: number;
+  quantity: number;
+}
+
 export async function POST(req: Request) {
   try {
     const body: CheckoutRequestBody = await req.json();
@@ -27,12 +35,13 @@ export async function POST(req: Request) {
 
     const origin = req.headers.get("origin") ?? "http://localhost:3000";
     const lineItems = [];
-    const validatedItems = [];
+    const validatedItems: ValidatedItem[] = [];
 
     for (const cartItem of body.items) {
       let productTitle = cartItem.title;
       let productPrice = cartItem.price;
       let productId = cartItem.id;
+      let productThumbnail = cartItem.thumbnail ?? "";
 
       try {
         // Tenta buscar o produto real no banco de dados para garantir segurança de preços
@@ -44,6 +53,7 @@ export async function POST(req: Request) {
           productTitle = dbProduct.title;
           productPrice = dbProduct.price;
           productId = dbProduct.id;
+          productThumbnail: dbProduct.thumbnail;
 
           if (dbProduct.stock < cartItem.quantity) {
             return NextResponse.json(
@@ -66,7 +76,7 @@ export async function POST(req: Request) {
           currency: "brl",
           product_data: {
             name: productTitle,
-            images: cartItem.thumbnail ? [cartItem.thumbnail] : [],
+            images: productThumbnail ? [productThumbnail] : [],
           },
           unit_amount: Math.round(productPrice * 100),
         },
@@ -75,6 +85,8 @@ export async function POST(req: Request) {
 
       validatedItems.push({
         productId: productId,
+        title: productTitle,
+        thumbnail: productThumbnail,
         quantity: cartItem.quantity,
         price: productPrice,
       });
@@ -91,6 +103,10 @@ export async function POST(req: Request) {
     const customerEmail =
       body.email && body.email !== "dev@nightowl.com" ? body.email : undefined;
 
+    // Gerando o trackingCode dinamicamente para o Stripe carregar na session do checkout
+    const randomDigits = Math.floor(100000 + Math.random() * 900000);
+    const trackingCode = `BR-${randomDigits}`;
+
     const sessionConfig: Record<string, unknown> = {
       payment_method_types: enabledPaymentMethods,
       line_items: lineItems,
@@ -99,8 +115,9 @@ export async function POST(req: Request) {
       metadata: {
         buyer_name: "Dev Recrutador - Portfolio Test",
         project_owner: "Francielle Ferraz",
+        trackingCode: trackingCode, // Passa o trackingCode via metadados para o Webhook ler com precisão
       },
-      success_url: `${origin}/order/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/order/success?productId={validatedItems[0]?.productId || "1"}&trackingCode=${trackingCode}`,
       cancel_url: `${origin}/order`,
     };
 
@@ -119,13 +136,19 @@ export async function POST(req: Request) {
     try {
       await prisma.order.create({
         data: {
-          stripeSessionId: session.id,
+          trackingCode: trackingCode,
           totalAmount: (session.amount_total ?? 0) / 100,
           status: "PENDING",
+          userId: "user-sandbox-01",
           items: {
             create: validatedItems.map((item) => ({
-              productId: item.productId,
+              title: item.title,
+              thumbnail: item.thumbnail,
+              price: item.price,
               quantity: item.quantity,
+              product: {
+                connect: { id: item.productId },
+              },
             })),
           },
         },
