@@ -120,7 +120,7 @@ export async function POST(req: Request) {
         project_owner: "Francielle Ferraz",
         trackingCode: trackingCode, // Passa o trackingCode via metadados para o Webhook ler com precisão
       },
-      success_url: `${origin}/order/success?productId={validatedItems[0]?.productId || "1"}&trackingCode=${trackingCode}`,
+      success_url: `${origin}/order/success?productId=${targetProductId}&trackingCode=${trackingCode}`,
       cancel_url: `${origin}/order`,
     };
 
@@ -156,6 +156,9 @@ export async function POST(req: Request) {
           },
         },
       });
+      console.log(
+        `[SUCESSO] Pedido ${trackingCode} registrado preliminamente no Supabase.`,
+      );
     } catch (orderError) {
       console.warn(
         "Falha ao persistir pedido no banco. Pedido processado em modo memória resiliente.",
