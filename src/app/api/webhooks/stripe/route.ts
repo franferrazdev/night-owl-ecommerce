@@ -80,25 +80,29 @@ export async function POST(request: Request) {
       }
 
       // Atualização Atômica: Marca o pedido como pago e dá baixa automática no estoque físico dos produtos
-      await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-        // Atualiza o status do pedido principal para pago (PAID)
-        await tx.order.update({
-          where: { id: existingOrder.id },
-          data: { status: "PAID" },
-        });
-
-        // Decrementa o estoque físico real de cada item comprado de forma segura
-        for (const orderItem of existingOrder.items) {
-          await tx.product.update({
-            where: { id: orderItem.productId },
-            data: {
-              stock: {
-                decrement: orderItem.quantity,
-              },
-            },
+      await prisma.$transaction(
+        async (
+          tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
+        ) => {
+          // Atualiza o status do pedido principal para pago (PAID)
+          await tx.order.update({
+            where: { id: existingOrder.id },
+            data: { status: "PAID" },
           });
-        }
-      });
+
+          // Decrementa o estoque físico real de cada item comprado de forma segura
+          for (const orderItem of existingOrder.items) {
+            await tx.product.update({
+              where: { id: orderItem.productId },
+              data: {
+                stock: {
+                  decrement: orderItem.quantity,
+                },
+              },
+            });
+          }
+        },
+      );
 
       console.log(
         `Sucesso Transacional: Pedido ${existingOrder.id} marcado como pago e estoque atualizado.`,

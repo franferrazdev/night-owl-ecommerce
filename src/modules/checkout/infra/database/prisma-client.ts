@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
+import * as pg from "pg";
 
 // Criação do pool nativo do PostgreSQL conectando vai variáveis de ambiente da Vercel
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });

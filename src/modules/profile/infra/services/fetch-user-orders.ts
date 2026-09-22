@@ -2,7 +2,7 @@
 
 import { prisma } from "@/modules/checkout/infra/database/prisma-client";
 import { OrderStatus } from "@/modules/checkout/domain/order-status";
-import { Order, OrderItem } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 export interface PreparedOrderProduct {
   id: string;
@@ -22,9 +22,9 @@ export interface PreparedOrder {
   items: PreparedOrderProduct[];
 }
 
-interface OrderWithItems extends Order {
-  items: OrderItem[];
-}
+type OrderWithItemsPayload = Prisma.OrderGetPayload<{
+  include: { items: true };
+}>;
 
 /** Server Action que busca o histórico completo de pedidos faturados de um usuário.
  * @param userId Identificador único do cliente na sessão */
@@ -49,21 +49,23 @@ export async function fetchUserOrders(
     });
 
     // Mapeamento explícito para garantir conformidade estrita com o tipo de domínio OrderStatus
-    return (orders as OrderWithItems[]).map((order: OrderWithItems) => ({
-      id: order.id,
-      trackingCode: order.trackingCode,
-      status: order.status as OrderStatus,
-      totalAmount: order.totalAmount,
-      createdAt: order.createdAt,
-      items: order.items.map((item) => ({
-        id: item.id,
-        productId: item.productId,
-        title: item.title,
-        thumbnail: item.thumbnail,
-        quantity: item.quantity,
-        price: item.price,
-      })),
-    }));
+    return (orders as OrderWithItemsPayload[]).map(
+      (order: OrderWithItemsPayload) => ({
+        id: order.id,
+        trackingCode: order.trackingCode,
+        status: order.status as OrderStatus,
+        totalAmount: order.totalAmount,
+        createdAt: order.createdAt,
+        items: order.items.map((item) => ({
+          id: item.id,
+          productId: item.productId,
+          title: item.title,
+          thumbnail: item.thumbnail,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      }),
+    );
   } catch (error) {
     console.error("Erro crítico ao ler histórico do Prisma:", error);
     return [];
