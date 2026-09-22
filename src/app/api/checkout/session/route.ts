@@ -53,7 +53,7 @@ export async function POST(req: Request) {
           productTitle = dbProduct.title;
           productPrice = dbProduct.price;
           productId = dbProduct.id;
-          productThumbnail: dbProduct.thumbnail;
+          productThumbnail = dbProduct.thumbnail;
 
           if (dbProduct.stock < cartItem.quantity) {
             return NextResponse.json(
@@ -106,6 +106,9 @@ export async function POST(req: Request) {
     // Gerando o trackingCode dinamicamente para o Stripe carregar na session do checkout
     const randomDigits = Math.floor(100000 + Math.random() * 900000);
     const trackingCode = `BR-${randomDigits}`;
+
+    // Injeta o ID dinâmico do primeiro produto comprado na URL
+    const targetProductId = validatedItems[0]?.productId || "1";
 
     const sessionConfig: Record<string, unknown> = {
       payment_method_types: enabledPaymentMethods,

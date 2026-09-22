@@ -85,9 +85,9 @@ export default function SuccessPage() {
         const randomDigits = Math.floor(100000 + Math.random() * 900000);
         activeCode = `BR-${randomDigits}`;
         sessionStorage.setItem("active_tracking_code", activeCode);
-      } else if (urlTrackingCode) {
+      } else {
         // Alinha a sessão com o código aberto do histórico
-        sessionStorage.setItem("active_tracking_code", urlTrackingCode);
+        sessionStorage.setItem("active_tracking_code", activeCode);
       }
 
       if (isMounted) setTrackingCode(activeCode);
@@ -188,8 +188,6 @@ export default function SuccessPage() {
 
     // Persiste o estado final de conclusão no Supabase
     await updateOrderStatus(trackingCode, "REVIEWED");
-    // Limpa o código da sessão para permitir futuras compras
-    sessionStorage.removeItem("active_tracking_code");
   };
 
   return (
