@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   User,
@@ -67,6 +68,7 @@ const getServerSnapshot = () => false;
 
 export default function ProfilePage() {
   const { user, logout } = useAuthStore();
+  const router = useRouter();
 
   // Estados locais dinâmicos para controlar loaders
   const [orders, setOrders] = useState<PreparedOrder[]>([]);
@@ -84,6 +86,10 @@ export default function ProfilePage() {
     async function loadOrders() {
       try {
         setIsLoading(true);
+
+        // Destrói ativamente qualquer resquício de Client-side Router Cache do Next.js
+        router.refresh();
+
         // Alinha com o "user-sandbox-01" persistido pelo CartDrawer
         const data = await fetchUserOrders("user-sandbox-01");
         setOrders(data);
@@ -95,7 +101,7 @@ export default function ProfilePage() {
     }
 
     loadOrders();
-  }, [mounted]);
+  }, [mounted, router]);
 
   if (!mounted) return null;
 

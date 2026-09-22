@@ -3,6 +3,7 @@
 import { prisma } from "@/modules/checkout/infra/database/prisma-client";
 import { OrderStatus } from "@/modules/checkout/domain/order-status";
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export interface PreparedOrderProduct {
   id: string;
@@ -47,6 +48,9 @@ export async function fetchUserOrders(
         createdAt: "desc", // Ordena dos pedidos mais recentes para os mais antigos
       },
     });
+
+    // Purga o cache da rota de perfil garantindo dados frescos do Supabase a cada chamada
+    revalidatePath("/profile");
 
     // Mapeamento explícito para garantir conformidade estrita com o tipo de domínio OrderStatus
     return (orders as OrderWithItemsPayload[]).map(
