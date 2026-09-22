@@ -19,13 +19,12 @@ export async function updateOrderStatus(
   try {
     await prisma.order.update({
       where: { trackingCode: trackingCode },
-      data: { status: newStatus },
+      data: { status: newStatus, userId: "user-sandbox-01" },
     });
 
     // Força o Next.js a limpar o cache e reler o banco de dados ma tela de perfil instantaneamente
     revalidatePath("/profile");
     return { success: true };
-    
   } catch (error) {
     console.error("Erro ao atualizar status do pedido no Prisma:", error);
     return {
