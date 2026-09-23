@@ -97,7 +97,10 @@ export function ProductCard({ product }: ProductCardProps) {
       </button>
 
       {/* Container de Imagem */}
-      <div className="relative w-full aspect-square bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4 border-b border-slate-100 dark:border-slate-900 overflow-hidden">
+      <Link
+        href={`/product/${product.id}`}
+        className="relative w-full aspect-square bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4 border-b border-slate-100 dark:border-slate-900 overflow-hidden cursor-pointer block"
+      >
         {product.thumbnail ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -112,7 +115,7 @@ export function ProductCard({ product }: ProductCardProps) {
             className="text-slate-300 dark:text-slate-700 stroke-[1.2]"
           />
         )}
-      </div>
+      </Link>
 
       {/* Corpo das Especificações */}
       <div className="flex flex-col flex-1 p-5 gap-2.5 min-w-0">
