@@ -97,7 +97,8 @@ The captures and video animations below illustrate the complete ecosystem at run
 
 #### 1. Main Catalog, Global Showcase, and Interactive Sliders
 
-<video src="[public/readme-gallery/01-catalog-showcase.webm](https://github.com/user-attachments/assets/e03cdfb6-945e-4816-a335-625aa2453f63)" autoplay loop muted width="100%" title="Dynamic Catalog Navigation"></video>
+<video src="https://github.com/user-attachments/assets/ebb182e3-5480-406c-a418-62840b423915
+" autoplay loop muted width="100%" title="Dynamic Catalog Navigation"></video>
 
 #### 2. Atomized Cart Drawer (Zustand Core Store)
 
@@ -113,7 +114,7 @@ The captures and video animations below illustrate the complete ecosystem at run
 
 #### 5. Transactional Success Confirmation and Tracking Automation
 
-<video src="[public/readme-gallery/05-logistic-automation.webm](https://github.com/user-attachments/assets/27663838-74bc-4d92-b6f6-20ca19dd8c40)" autoplay loop muted width="100%" title="Logistical State Machine Sandbox Animation"></video>
+<video src="https://github.com/user-attachments/assets/a33c0642-7fef-49ae-9a2b-95b16bfe03f0" autoplay loop muted width="100%" title="Logistical State Machine Sandbox Animation"></video>
 
 #### 6. Order History and Client Profile Area
 
