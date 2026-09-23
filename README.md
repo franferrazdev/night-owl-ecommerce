@@ -4,35 +4,37 @@
 
 Plataforma completa de e-commerce transacional de alta performance desenvolvida com Next.js 16, React 19 e Tailwind CSS v4. O projeto adota princípios rigorosos de Clean Architecture, gerenciamento de estado atomizado com Zustand, proteção de rotas privadas via Edge Middlewares e integração assíncrona com o gateway de pagamentos Stripe Sandbox, utilizando persistência relacional no PostgreSQL via Prisma ORM.
 
-### 🔗 Link de Demonstração (Live Demo)
+## 🔗 Demonstração em Tempo Real / Live Demo
 
-Acesse a aplicação publicada oficialmente em produção:
+👉 **Acesse o sistema no ar:** [Night Owl E-commerce](https://night-owl-ecommerce.vercel.app/)
 
-- **Hospedagem Vercel:** [https://vercel.app] (https://vercel.app)
+### 📸 Galeria de Telas e Demonstrações Animadas (UI/UX)
 
-### 📸 Galeria de Telas (Interface do Usuário)
+As demonstrações e capturas abaixo ilustram o ecossistema completo em tempo de execução:
 
-As capturas abaixo ilustram o ecossistema completo em tempo de execução:
+#### 1. Catálogo Principal, Vitrine Global e Sliders Interativos
 
-#### 1. Catálogo Principal e Vitrine Global
+<video src="public/readme-gallery/01-catalog-showcase.webm" autoplay loop muted width="100%" title="Navegação Dinâmica do Catálogo"></video>
 
-![Vitrines e Comportamentos Dinâmicos] (public/readme-gallery/01-catalog-desktop.png)
+#### 2. Carrinho Lateral Atomizado (Zustand Core Store)
 
-#### 2. Carrinho Principal e Vitrine Global
-
-![Gerenciamento de Fluxo do Carrinho] (public/readme-gallery/02-cart-drawer.png)
+![Gerenciamento de Fluxo do Carrinho](public/readme-gallery/02-cart-drawer.png)
 
 #### 3. Página do Formulário de Pedidos (Checkout Dinâmico)
 
-![Estrutura de Faturamento de Pedidos] (public/readme-gallery/03-order-page.png)
+![Estrutura de Faturamento de Pedidos](public/readme-gallery/03-order-page.png)
 
 #### 4. Gateway de Pagamento Seguro Hospedado (Stripe Sandbox)
 
-![Ambiente Criptografado Adquirente Stripe] (public/readme-gallery/04-stripe-checkout.png)
+![Ambiente Criptografado Adquirente Stripe](public/readme-gallery/04-stripe-checkout.png)
 
-#### 5. Configuração de Sucesso Transacional e Captura de Sessão
+#### 5. Configuração de Sucesso Transacional e Automação de Rastreamento
 
-![Página de Sucesso e Geração de Recibos] (public/readme-gallery/05-success-payment.png)
+<video src="public/readme-gallery/05-logistic-automation.webm" autoplay loop muted width="100%" title="Máquina de Estados Logística Sandbox"></video>
+
+#### 6. Histórico de Pedidos e Área do Cliente
+
+![Histórico Logístico Atômico no Perfil](public/readme-gallery/06-profile-history.png)
 
 ## 🌌 Funcionalidades Adicionadas
 
@@ -83,19 +85,17 @@ AMbiente Sandbox desenvolvido e homologado integralmente por **Francielle Ferraz
 
 A complete high-performance transactional e-commerce platform built with Next.js 16, React 19, and Tailwind CSS v4. The project strictly adopts Clean Architecture principles, atomized state management with Zustand, private route protection via Edge Middlewares, and dynamic integration with the Stripe Sandbox payment gateway, utilizing relational persistence on PostgreSQL via Prisma ORM.
 
-### 🔗 Live Demo Link
+## 🔗 Live Demo
 
-Access the application officially deployed in production:
+👉 **Access the system online:** [Night Owl E-commerce](https://night-owl-ecommerce.vercel.app/)
 
-- **Vercel Hosting:** [https://vercel.app](https://vercel.app)
+### 📸 Interface Gallery and Animated Demonstrations (UI/UX)
 
-### 📸 Interface Gallery (User Interface)
+The captures and video animations below illustrate the complete ecosystem at runtime:
 
-The screenshots below illustrate the complete ecosystem at runtime:
+#### 1. Main Catalog, Global Showcase, and Interactive Sliders
 
-#### 1. Main Catalog and Global Showcase
-
-![Showcases and Dynamic Components](public/readme-gallery/01-catalog-desktop.png)
+<video src="public/readme-gallery/01-catalog-showcase.webm" autoplay loop muted width="100%" title="Dynamic Catalog Navigation"></video>
 
 #### 2. Atomized Cart Drawer (Zustand Core Store)
 
@@ -109,9 +109,13 @@ The screenshots below illustrate the complete ecosystem at runtime:
 
 ![Stripe Acquiring Encrypted Environment](public/readme-gallery/04-stripe-checkout.png)
 
-#### 5. Transactional Success Confirmation and Session Capture
+#### 5. Transactional Success Confirmation and Tracking Automation
 
-![Success Page and Receipt Generation](public/readme-gallery/05-success-payment.png)
+<video src="public/readme-gallery/05-logistic-automation.webm" autoplay loop muted width="100%" title="Logistical State Machine Sandbox Animation"></video>
+
+#### 6. Order History and Client Profile Area
+
+![Atomic Logistic History on Profile](public/readme-gallery/06-profile-history.png)
 
 ## 🌌 Features Added
 
