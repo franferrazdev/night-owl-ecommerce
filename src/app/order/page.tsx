@@ -14,7 +14,7 @@ import {
 import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 import { useAuthStore } from "@/modules/checkout/presentation/store/auth-store";
 import { toast } from "react-hot-toast";
-
+import { createOrder } from "@/modules/checkout/infra/services/create-order";
 export default function CheckoutPage() {
   const { items, getTotalAmount } = useCartStore();
   const { user, isAuthenticated } = useAuthStore();
@@ -114,6 +114,13 @@ export default function CheckoutPage() {
         const session = await res.json();
 
         if (session.url) {
+          if (session.trackingCode) {
+            sessionStorage.setItem(
+              "active_tracking_code",
+              session.trackingCode,
+            );
+          }
+
           toast.success("Redirecionando para o ambiente seguro do Stripe...");
           // Guarda o ID temporário do checkout no SessionStorage para controle local
           sessionStorage.setItem(
@@ -129,14 +136,44 @@ export default function CheckoutPage() {
         }
       }
 
-      //  O fluxo do PIX continua operando no modelo híbrido via QR Code local
+      // Fluxo de pagamento via PIX
       if (paymentMethod === "pix") {
-        toast.success("Pagamento via PIX processado com sucesso!");
+        const trackingCode =
+          sessionStorage.getItem("active_tracking_code") ||
+          `BR-${Math.floor(100000 + Math.random() * 900000)}`;
+
+        const payloadItems = items.map((item) => ({
+          id: String(item.id),
+          title: String(item.title),
+          thumbnail: item.thumbnail ? String(item.thumbnail) : "",
+          price: Number(item.price),
+          quantity: Number(item.quantity),
+        }));
+
+        const result = await createOrder({
+          userId: "user-sandbox-01",
+          trackingCode,
+          totalAmount: getTotalAmount(),
+          items: payloadItems,
+        });
+
+        if (!result.success) {
+          throw new Error(result.error || "Não foi possível criar o pedido.");
+        }
+
+        sessionStorage.setItem("active_tracking_code", trackingCode);
         sessionStorage.setItem(
           "last_order_id",
-          `owl-pix-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+          result.orderId || `owl-pix-${Date.now()}`,
         );
-        router.push("/order/success");
+
+        toast.success("Pedido criado com sucesso!");
+
+        router.push(
+          `/order/success?productId=${encodeURIComponent(
+            items[0].id,
+          )}&trackingCode=${encodeURIComponent(trackingCode)}`,
+        );
       }
     } catch (err) {
       const message =

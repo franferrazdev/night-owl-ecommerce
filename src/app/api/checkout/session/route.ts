@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/modules/checkout/infra/stripe/stripe-config";
 import { prisma } from "@/modules/checkout/infra/database/prisma-client";
-import { error } from "next/dist/build/output/log";
 
 interface CheckoutRequestBody {
   items: {
@@ -137,34 +136,58 @@ export async function POST(req: Request) {
     });
 
     try {
-      await prisma.order.create({
-        data: {
-          trackingCode: trackingCode,
-          totalAmount: (session.amount_total ?? 0) / 100,
-          status: "PENDING",
-          userId: "user-sandbox-01",
-          items: {
-            create: validatedItems.map((item) => ({
+      await prisma.$transaction(async (tx) => {
+        for (const item of validatedItems) {
+          await tx.product.upsert({
+            where: { id: item.productId },
+            update: {
               title: item.title,
-              thumbnail: item.thumbnail,
               price: item.price,
-              quantity: item.quantity,
-              product: {
-                connect: { id: item.productId },
-              },
-            })),
+              thumbnail: item.thumbnail,
+            },
+            create: {
+              id: item.productId,
+              externalId: Math.floor(100000 + Math.random() * 900000),
+              title: item.title,
+              price: item.price,
+              stock: 99,
+              thumbnail: item.thumbnail,
+            },
+          });
+        }
+
+        await tx.order.create({
+          data: {
+            trackingCode,
+            totalAmount: (session.amount_total ?? 0) / 100,
+            status: "PENDING",
+            userId: "user-sandbox-01",
+            items: {
+              create: validatedItems.map((item) => ({
+                productId: item.productId,
+                title: item.title,
+                thumbnail: item.thumbnail,
+                price: item.price,
+                quantity: item.quantity,
+              })),
+            },
           },
-        },
+        });
       });
       console.log(
         `[SUCESSO] Pedido ${trackingCode} registrado preliminamente no Supabase.`,
       );
     } catch (orderError) {
-      console.warn(
-        "Falha ao persistir pedido no banco. Pedido processado em modo memória resiliente.",
+      console.error("Erro Crítico ao persistir pedido no Prisma:", orderError);
+      return NextResponse.json(
+        {
+          error:
+            "Falha de persistência interna no banco de dados. O checkoout foi abortado.",
+        },
+        { status: 500 },
       );
     }
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ url: session.url, trackingCode });
   } catch (error) {
     console.error("Falha Crítica no Proxy de Sessão de Checkout:", error);
     return NextResponse.json(

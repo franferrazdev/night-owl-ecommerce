@@ -6,6 +6,9 @@ import { useCartStore } from "@/modules/checkout/presentation/store/cart-store";
 
 // Realiza o mock isolado do Zustand para controlar o estado do carrinho nos testes
 jest.mock("@/modules/checkout/presentation/store/cart-store");
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({ push: jest.fn() }),
+}));
 
 const useCartStoreMock = useCartStore as jest.MockedFunction<
   typeof useCartStore
@@ -27,7 +30,7 @@ describe("Componente Unitário: CartDrawer", () => {
       addItem: jest.fn(),
       removeItem: jest.fn(),
       updateQuantity: jest.fn(),
-      getTotalItemsAmount: () => 0,
+      getTotalItemsCount: () => 0,
     });
 
     render(<CartDrawer />);
@@ -82,7 +85,7 @@ describe("Componente Unitário: CartDrawer", () => {
     useCartStoreMock.mockReturnValue({
       items: [itemSimulator],
       isOpen: true,
-      tofflwCart: jest.fn(),
+      toggleCart: jest.fn(),
       getTotalAmount: () => 150.0,
       clearCart: jest.fn,
       addItem: jest.fn,

@@ -2,7 +2,6 @@
 
 import { prisma } from "@/modules/checkout/infra/database/prisma-client";
 import { OrderStatus } from "@/modules/checkout/domain/order-status";
-import { revalidatePath } from "next/cache";
 
 /** Server Action que atualiza o status de um pedido no banco e limpa o cache do Next.js
  * @param trackingCode Código BR-XXXXXX do pedido
@@ -22,8 +21,6 @@ export async function updateOrderStatus(
       data: { status: newStatus, userId: "user-sandbox-01" },
     });
 
-    // Força o Next.js a limpar o cache e reler o banco de dados ma tela de perfil instantaneamente
-    revalidatePath("/profile");
     return { success: true };
   } catch (error) {
     console.error("Erro ao atualizar status do pedido no Prisma:", error);

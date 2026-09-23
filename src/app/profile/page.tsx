@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   User,
@@ -70,11 +69,12 @@ const getServerSnapshot = () => false;
 
 export default function ProfilePage() {
   const { user, logout } = useAuthStore();
-  const router = useRouter();
 
   // Estados locais dinâmicos para controlar loaders
   const [orders, setOrders] = useState<PreparedOrder[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const loadingOrders = useRef(false);
+  const hasLoadedOrders = useRef(false);
 
   const mounted = useSyncExternalStore(
     emptySubscription,
@@ -86,24 +86,49 @@ export default function ProfilePage() {
     if (!mounted) return;
 
     async function loadOrders() {
+      if (loadingOrders.current) return;
+
+      loadingOrders.current = true;
+      const isInitialLoad = !hasLoadedOrders.current;
+
+      if (isInitialLoad) setIsLoading(true);
+
       try {
-        setIsLoading(true);
-
-        // Destrói ativamente qualquer resquício de Client-side Router Cache do Next.js
-        router.refresh();
-
         // Alinha com o "user-sandbox-01" persistido pelo CartDrawer
         const data = await fetchUserOrders("user-sandbox-01");
         setOrders(data);
+        hasLoadedOrders.current = true;
       } catch (error) {
         console.error("Falha ao recuperar histórico:", error);
       } finally {
-        setIsLoading(false);
+        loadingOrders.current = false;
+        if (isInitialLoad) setIsLoading(false);
       }
     }
 
     loadOrders();
-  }, [mounted, router]);
+
+    const interval = window.setInterval(loadOrders, 5000);
+
+    const handleFocus = () => {
+      loadOrders();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        loadOrders();
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [mounted]);
 
   if (!mounted) return null;
 
@@ -202,9 +227,15 @@ export default function ProfilePage() {
               </div>
             ) : (
               orders.map((order) => {
+                // Captura a string bruta de dados
+                const rawStatus = (order.status || "PREPARING").toUpperCase();
+                // Se for um estado transacional do Stripe (PENDING/PAID), normaliza para PREPARING
+                const isInitialStripeStatus =
+                  rawStatus === "PENDING" || rawStatus === "PAID";
                 const safeStatus = (
-                  order.status || "PREPARING"
-                ).toUpperCase() as OrderStatus;
+                  isInitialStripeStatus ? "PREPARING" : rawStatus
+                ) as OrderStatus;
+
                 const displayLabel =
                   safeStatus === "REVIEWED"
                     ? "Avaliado"
@@ -216,7 +247,7 @@ export default function ProfilePage() {
                     key={order.id}
                     className="bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-900 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md transition-colors"
                   >
-                    <div className="flex flex-col gap-1 min-w-0 flex-1">
+                    <div className="flex items-center gap-4 min-w-0 flex-1">
                       {firstItem?.thumbnail && (
                         <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-950 p-2 border border-slate-200 dark:border-slate-800 flex items-center justify-center shrink-0 overflow-hidden relative">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
