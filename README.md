@@ -14,7 +14,8 @@ As demonstrações e capturas abaixo ilustram o ecossistema completo em tempo de
 
 #### 1. Catálogo Principal, Vitrine Global e Sliders Interativos
 
-<video src="public/readme-gallery/01-catalog-showcase.webm" autoplay loop muted width="100%" title="Navegação Dinâmica do Catálogo"></video>
+<video src="https://github.com/user-attachments/assets/ebb182e3-5480-406c-a418-62840b423915
+" autoplay loop muted width="100%" title="Navegação Dinâmica do Catálogo"></video>
 
 #### 2. Carrinho Lateral Atomizado (Zustand Core Store)
 
@@ -30,7 +31,8 @@ As demonstrações e capturas abaixo ilustram o ecossistema completo em tempo de
 
 #### 5. Configuração de Sucesso Transacional e Automação de Rastreamento
 
-<video src="[public/readme-gallery/05-logistic-automation.webm](https://github.com/user-attachments/assets/27663838-74bc-4d92-b6f6-20ca19dd8c40)" autoplay loop muted width="100%" title="Máquina de Estados Logística Sandbox"></video>
+<video src="https://github.com/user-attachments/assets/a33c0642-7fef-49ae-9a2b-95b16bfe03f0
+" autoplay loop muted width="100%" title="Máquina de Estados Logística Sandbox"></video>
 
 #### 6. Histórico de Pedidos e Área do Cliente
 
