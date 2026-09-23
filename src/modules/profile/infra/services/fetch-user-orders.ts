@@ -3,7 +3,6 @@
 import { prisma } from "@/modules/checkout/infra/database/prisma-client";
 import { OrderStatus } from "@/modules/checkout/domain/order-status";
 import { Prisma } from "@prisma/client";
-import { revalidatePath } from "next/cache";
 
 export interface PreparedOrderProduct {
   id: string;
@@ -49,9 +48,6 @@ export async function fetchUserOrders(
       },
     });
 
-    // Purga o cache da rota de perfil garantindo dados frescos do Supabase a cada chamada
-    revalidatePath("/profile");
-
     // Mapeamento explícito para garantir conformidade estrita com o tipo de domínio OrderStatus
     return (orders as OrderWithItemsPayload[]).map(
       (order: OrderWithItemsPayload) => ({
@@ -72,6 +68,24 @@ export async function fetchUserOrders(
     );
   } catch (error) {
     console.error("Erro crítico ao ler histórico do Prisma:", error);
-    return [];
+    throw error;
+  }
+}
+
+export async function fetchOrderStatus(
+  trackingCode: string,
+): Promise<OrderStatus | null> {
+  if (!trackingCode) return null;
+
+  try {
+    const order = await prisma.order.findUnique({
+      where: { trackingCode },
+      select: { status: true },
+    });
+
+    return (order?.status as OrderStatus | undefined) ?? null;
+  } catch (error) {
+    console.error("Erro crítico ao ler o status do pedido:", error);
+    return null;
   }
 }

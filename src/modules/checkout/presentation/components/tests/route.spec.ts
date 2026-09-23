@@ -8,10 +8,12 @@ jest.mock("@/modules/checkout/infra/database/prisma-client", () => ({
   prisma: {
     product: {
       findUnique: jest.fn(),
+      upsert: jest.fn(),
     },
     order: {
       create: jest.fn(),
     },
+    $transaction: jest.fn(),
   },
 }));
 
@@ -28,6 +30,13 @@ jest.mock("@/modules/checkout/infra/stripe/stripe-config", () => ({
 describe("POST /api/checkout", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    (prisma.$transaction as jest.Mock).mockImplementation(async (callback) =>
+      callback({
+        product: { upsert: prisma.product.upsert },
+        order: { create: prisma.order.create },
+      }),
+    );
   });
 
   it("uses the demo fallback when the database has no matching product", async () => {
@@ -43,7 +52,16 @@ describe("POST /api/checkout", () => {
 
     const response = await POST({
       json: async () => ({
-        items: [{ id: "prod-noir-1", externalId: 1, quantity: 1 }],
+        items: [
+          {
+            id: "prod-noir-1",
+            title: "Produto de teste",
+            price: 129.9,
+            thumbnail: "https://example.com/product.png",
+            quantity: 1,
+          },
+        ],
+        email: "test@example.com",
       }),
       headers: new Headers({
         Origin: "http://localhost:3000",
@@ -52,7 +70,7 @@ describe("POST /api/checkout", () => {
     } as unknown as Request);
 
     expect(prisma.product.findUnique).toHaveBeenCalledWith({
-      where: { externalId: 1 },
+      where: { id: "prod-noir-1" },
     });
 
     expect(stripe.checkout.sessions.create).toHaveBeenCalledWith(
@@ -62,17 +80,25 @@ describe("POST /api/checkout", () => {
       expect.objectContaining({ idempotencyKey: expect.any(String) }),
     );
 
+    expect(prisma.product.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "prod-noir-1" },
+      }),
+    );
+
     expect(prisma.order.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
-          stripeSessionId: "cs_test_123",
+          totalAmount: 129.9,
+          status: "PENDING",
+          userId: "user-sandbox-01",
           items: {
             create: [
-              {
-                productId: "demo-product-1",
+              expect.objectContaining({
+                productId: "prod-noir-1",
                 quantity: 1,
                 price: 129.9,
-              },
+              }),
             ],
           },
         }),
@@ -82,6 +108,7 @@ describe("POST /api/checkout", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
       url: "https://checkout.stripe.com/test",
+      trackingCode: expect.stringMatching(/^BR-\d{6}$/),
     });
   });
 });

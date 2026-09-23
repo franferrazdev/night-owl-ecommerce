@@ -18,7 +18,7 @@ import {
   StarHalf,
 } from "lucide-react";
 import { updateOrderStatus } from "@/modules/checkout/infra/services/update-order-status";
-import { fetchUserOrders } from "@/modules/profile/infra/services/fetch-user-orders";
+import { fetchOrderStatus } from "@/modules/profile/infra/services/fetch-user-orders";
 
 const emptySubscription = () => () => {};
 
@@ -91,24 +91,19 @@ export default function SuccessPage() {
       }
 
       if (isMounted) setTrackingCode(activeCode);
+
+      let persistedStatus: OrderStatus = "PREPARING";
+
       try {
-        // Verifica o estado real do pedido salvo no Supabase
-        const userOrders = await fetchUserOrders("user-sandbox-01");
-        const currentOrderInDb = userOrders.find(
-          (o) => o.trackingCode === activeCode,
-        );
+        const status = await fetchOrderStatus(activeCode);
 
-        if (currentOrderInDb) {
-          if (isMounted) setCurrentStatus(currentOrderInDb.status);
+        if (status) {
+          persistedStatus = status;
+          if (isMounted) setCurrentStatus(status);
 
-          // Se o pedido já avançou além do estágio automático, bloqueia o re-disparo dos timers
-          const blockList: OrderStatus[] = [
-            "DELIVERED",
-            "CONFIRMED",
-            "REVIEWING",
-            "REVIEWED",
-          ];
-          if (blockList.includes(currentOrderInDb.status)) {
+          if (
+            ["DELIVERED", "CONFIRMED", "REVIEWING", "REVIEWED"].includes(status)
+          ) {
             return;
           }
         }
@@ -116,28 +111,34 @@ export default function SuccessPage() {
         console.error("Falha ao ler registros de faturamento na nuvem:", error);
       }
 
-      // Sandbox Automation - Atualiza a interface E grava as transições no Supabase de forma autônoma
-      timer1 = setTimeout(() => {
-        if (!isMounted) return;
-        setCurrentStatus("SHIPPED");
-        toast.success(
-          "Logística: O seu pedido foi despachado e está a caminho!",
-        );
+      if (
+        persistedStatus === "PENDING" ||
+        persistedStatus === "PAID" ||
+        persistedStatus === "PREPARING"
+      ) {
+        timer1 = setTimeout(async () => {
+          if (!isMounted) return;
 
-        // Persiste o estado Enviado no banco automaticamente
-        updateOrderStatus(activeCode!, "SHIPPED").catch(console.error);
-      }, 6000);
+          setCurrentStatus("SHIPPED");
+          toast.success(
+            "Logística: O seu pedido foi despachado e está a caminho!",
+          );
+          await updateOrderStatus(activeCode!, "SHIPPED");
+        }, 600);
+      }
 
-      timer2 = setTimeout(() => {
-        if (!isMounted) return;
-        setCurrentStatus("DELIVERED");
-        toast.success(
-          "Logística: Pacote entregue! Por favor, confirme o recebimento.",
-        );
+      timer2 = setTimeout(
+        async () => {
+          if (!isMounted) return;
 
-        // Persiste o estado Entregue no banco automaticamente
-        updateOrderStatus(activeCode!, "DELIVERED").catch(console.error);
-      }, 8000);
+          setCurrentStatus("DELIVERED");
+          toast.success(
+            "Logística: Pacote entregue! Por favor, confirme o recebimento.",
+          );
+          await updateOrderStatus(activeCode!, "DELIVERED");
+        },
+        persistedStatus === "SHIPPED" ? 600 : 1800,
+      );
     }
     initializeAndCheckStatus();
 
