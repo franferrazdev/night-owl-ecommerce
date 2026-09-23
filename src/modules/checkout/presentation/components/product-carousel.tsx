@@ -83,7 +83,9 @@ export function ProductCarousel({ featuredProducts }: ProductCarouselProps) {
   const handleAddToCart = () => {
     addItem({
       id: currentProduct.id,
-      externalId: currentProduct.externalId,
+      externalId: currentProduct.externalId
+        ? Number(currentProduct.externalId)
+        : Number(currentProduct.id),
       title: currentProduct.title,
       price: currentProduct.price,
       stock: currentProduct.stock,
@@ -96,7 +98,7 @@ export function ProductCarousel({ featuredProducts }: ProductCarouselProps) {
     <div className="w-full max-w-5xl bg-slate-100 dark:bg-[#0F172A] border border-slate-200 dark:border-slate-900 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl relative min-h-85 transition-all duration-500 overflow-hidden group text-slate-900 dark:text-slate-100">
       {/* Container da Imagem em Destaque */}
       <Link
-        href={`/product/${currentProduct.id}`}
+        href={`/product/${currentProduct.id || "1"}`}
         className="w-full md:1/2 aspect-video md:h-64 flex items-center justify-center bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-900/60 rouded-xl p-6 shrink-0 relative overflow-hidden cursor-pointer"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
