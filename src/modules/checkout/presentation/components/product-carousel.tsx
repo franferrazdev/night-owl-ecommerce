@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
@@ -94,7 +95,10 @@ export function ProductCarousel({ featuredProducts }: ProductCarouselProps) {
   return (
     <div className="w-full max-w-5xl bg-slate-100 dark:bg-[#0F172A] border border-slate-200 dark:border-slate-900 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl relative min-h-85 transition-all duration-500 overflow-hidden group text-slate-900 dark:text-slate-100">
       {/* Container da Imagem em Destaque */}
-      <div className="w-full md:1/2 aspect-video md:h-64 flex items-center justify-center bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-900/60 rouded-xl p-6 shrink-0 relative overflow-hidden">
+      <Link
+        href={`/product/${currentProduct.id}`}
+        className="w-full md:1/2 aspect-video md:h-64 flex items-center justify-center bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-900/60 rouded-xl p-6 shrink-0 relative overflow-hidden cursor-pointer"
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={currentProduct.thumbnail}
@@ -109,7 +113,20 @@ export function ProductCarousel({ featuredProducts }: ProductCarouselProps) {
           <Sparkles size={10} className="fill-current" />
           {capaign.tag}
         </div>
-      </div>
+
+        {/* Interactive Hover Overlay */}
+        <div className="absolute inset-0 bg-black/60 dark:bg-slate-950/75 backdrop-blur-xs opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-center p-4 transition-opacity duration-300 gap-1.5 z-20">
+          <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 font-mono">
+            Ver Detalhes do Item
+          </span>
+          <h3 className="text-sm font-bold text-white line-clamp-2 px-4 max-w-70">
+            {currentProduct.title}
+          </h3>
+          <span className="text-base font-black text-emerald-400">
+            R$ {currentProduct.price.toFixed(2)}
+          </span>
+        </div>
+      </Link>
 
       {/* Textos Informativos e Ações */}
       <div className="flex flex-col flex-1 justify-center w-full gap-4 min-w-0">
@@ -149,27 +166,39 @@ export function ProductCarousel({ featuredProducts }: ProductCarouselProps) {
 
       {/* Controles Laterais de Navegação */}
       <button
-        onClick={handlePrev}
-        className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-electric-blue dark:hover:text-electric-cyan rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-md cursor-pointer hidden md:flex"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation(); // Trava a propagação do clique para o Link de fundo
+          handlePrev();
+        }}
+        className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-electric-blue dark:hover:text-electric-cyan rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-md cursor-pointer hidden md:flex z-50"
         aria-label="Slide anterior"
       >
         <ChevronLeft size={18} />
       </button>
 
       <button
-        onClick={handleNext}
-        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-electric-blue dark:hover:text-electric-cyan rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-md cursor-pointer hidden md:flex"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation(); // Trava a propagação do clique para o Link de fundo
+          handleNext();
+        }}
+        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-electric-blue dark:hover:text-electric-cyan rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-md cursor-pointer hidden md:flex z-50"
         aria-label="Próximo slide"
       >
         <ChevronRight size={18} />
       </button>
 
       {/* Bullets de Paginação */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-50">
         {featuredProducts.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setCurrentIndex(index);
+            }}
             className={`h-1.5 rounded-full transition-all cursor-pointer ${
               index === currentIndex
                 ? "w-4 bg-electric-blue dark:bg-electric-cyan"
