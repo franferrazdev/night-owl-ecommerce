@@ -96,8 +96,7 @@ The captures and video animations below illustrate the complete ecosystem at run
 
 #### 1. Main Catalog, Global Showcase, and Interactive Sliders
 
-<video src="https://github.com/user-attachments/assets/ebb182e3-5480-406c-a418-62840b423915
-" autoplay loop muted width="100%" title="Dynamic Catalog Navigation"></video>
+<video src="https://github.com/user-attachments/assets/bed9feff-40ff-43e8-8ee2-8edf53db3b6b" autoplay loop muted width="100%" title="Dynamic Catalog Navigation"></video>
 
 #### 2. Atomized Cart Drawer (Zustand Core Store)
 
