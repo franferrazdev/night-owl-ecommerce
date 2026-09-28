@@ -123,141 +123,147 @@ export default function CatalogPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 flex flex-col items-center justify-start p-6 md:p-12 gap-8 font-sans transition-colors duration-200">
+    <main className="relative h-auto w-full bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 overflow-x-clip">
       {/* Cabeçalho de Navegação */}
-      <header className="w-full max-w-5xl flex items-center justify-between py-4 border-b border-slate-200 dark:border-slate-900 transition-colors">
-        <h1 className="text-xl font-black tracking-wider bg-linear-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
-          NIGHT OWL CATALOG
-        </h1>
+      <header className="sticky top-0 z-50 w-full flex justify-center py-4 px-6 md:px-12  border-b border-slate-200/60 dark:border-slate-900/60 bg-slate-50/90 dark:bg-[#0B0F19]/90 backdrop-blur-md transition-all shadow-xs">
+        {/* Container Interno */}
+        <div className="w-full max-w-5xl flex items-center justify-between">
+          <h1 className="text-xl font-black tracking-wider bg-linear-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent uppercase">
+            NIGHT OWL ECOMMERCE
+          </h1>
 
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-electric-cyan rounded-lg transition-all cursor-pointer flex items-center justify-center shadow-xs"
-            aria-label="Alternar tema de cores"
-          >
-            {mounted && theme === "dark" ? (
-              <Sun size={15} />
-            ) : (
-              <Moon size={15} />
-            )}
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-electric-cyan rounded-lg transition-all cursor-pointer flex items-center justify-center shadow-xs"
+              aria-label="Alternar tema de cores"
+            >
+              {mounted && theme === "dark" ? (
+                <Sun size={15} />
+              ) : (
+                <Moon size={15} />
+              )}
+            </button>
 
-          <button
-            onClick={toggleCart}
-            className="relative p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-electric-cyan rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200"
-          >
-            <span>Meu Carrinho</span>
+            <button
+              onClick={toggleCart}
+              className="relative p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-electric-cyan rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200"
+            >
+              <span>Meu Carrinho</span>
 
-            {mounted && getTotalItemsCount() > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-electric-blue dark:bg-electric-cyan text-white dark:text-shadow-slate-950 text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-pulse">
-                {getTotalItemsCount()}
-              </span>
-            )}
-          </button>
-
-          {mounted &&
-            (isAuthenticated ? (
-              <Link
-                href="/profile"
-                className="flex
-               items-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold tracking-wider uppercase transition-all"
-              >
-                <User
-                  size={14}
-                  className="text-electric-blue dark:text-electric-cyan"
-                />
-                <span className="max-w-22.5 truncate hidden sm:inline">
-                  {user?.name}
+              {mounted && getTotalItemsCount() > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-electric-blue dark:bg-electric-cyan text-white dark:text-shadow-slate-950 text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-pulse">
+                  {getTotalItemsCount()}
                 </span>
-              </Link>
-            ) : (
-              <Link
-                href="/auth"
-                className="flex items-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold tracking-wider uppercase transition-all cursor-pointer"
-              >
-                <User size={14} className="text-slate-400" />
-                <span className="hidden sm:inline">Entrar</span>
-              </Link>
-            ))}
+              )}
+            </button>
+
+            {mounted &&
+              (isAuthenticated ? (
+                <Link
+                  href="/profile"
+                  className="flex
+               items-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold tracking-wider uppercase transition-all"
+                >
+                  <User
+                    size={14}
+                    className="text-electric-blue dark:text-electric-cyan"
+                  />
+                  <span className="max-w-22.5 truncate hidden sm:inline">
+                    {user?.name}
+                  </span>
+                </Link>
+              ) : (
+                <Link
+                  href="/auth"
+                  className="flex items-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold tracking-wider uppercase transition-all cursor-pointer"
+                >
+                  <User size={14} className="text-slate-400" />
+                  <span className="hidden sm:inline">Entrar</span>
+                </Link>
+              ))}
+          </div>
         </div>
       </header>
 
-      {/* Carrossel de Destaques */}
-      {!loading &&
-        !showOnlyFavorites &&
-        searchQuery === "" &&
-        selectedCategory === "todos" && (
-          <ProductCarousel featuredProducts={featuredProducts} />
+      {/* Container de Conteúdo Geral */}
+      <div className="w-full max-w-5xl flex flex-col items-center justify-start p-6 md:p-12 pt-4 md:pt-6 gap-8 mx-auto">
+        {/* Carrossel de Destaques */}
+        {!loading &&
+          !showOnlyFavorites &&
+          searchQuery === "" &&
+          selectedCategory === "todos" && (
+            <ProductCarousel featuredProducts={featuredProducts} />
+          )}
+
+        {/* Esteira de Categorias Rápidas */}
+        {!loading && !showOnlyFavorites && (
+          <CategoryBar
+            categories={dynamicCategories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
         )}
 
-      {/* Esteira de Categorias Rápidas */}
-      {!loading && !showOnlyFavorites && (
-        <CategoryBar
-          categories={dynamicCategories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-        />
-      )}
+        {/* Filtros de Busca */}
+        <div className="w-full max-w-5xl flex flex-col gap-4">
+          {!loading && (
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                  className={`flex items-center gap-2 px-4 py-2.5 border rounded-lg text-xs font-bold tracking-wider uppercase transition-all cursor-pointer ${
+                    showOnlyFavorites
+                      ? "bg-electric-blue/10 dark:bg-electric-cyan/10 border-electric-blue/30 dark:border-electric-cyan/50 text-electric-blue dark:text-electric-cyan"
+                      : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+                  }`}
+                >
+                  <Heart
+                    size={14}
+                    className={showOnlyFavorites ? "fill-cyan-400" : ""}
+                  />
+                  <span>
+                    {showOnlyFavorites
+                      ? "Ver Todos os Produtos"
+                      : `Meus Favoritos (${favoriteIds.length})`}
+                  </span>
+                </button>
+              </div>
 
-      {/* Filtros de Busca */}
-      <div className="w-full max-w-5xl flex flex-col gap-4">
-        {!loading && (
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-end">
-              <button
-                onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
-                className={`flex items-center gap-2 px-4 py-2.5 border rounded-lg text-xs font-bold tracking-wider uppercase transition-all cursor-pointer ${
-                  showOnlyFavorites
-                    ? "bg-electric-blue/10 dark:bg-electric-cyan/10 border-electric-blue/30 dark:border-electric-cyan/50 text-electric-blue dark:text-electric-cyan"
-                    : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
-                }`}
-              >
-                <Heart
-                  size={14}
-                  className={showOnlyFavorites ? "fill-cyan-400" : ""}
-                />
-                <span>
-                  {showOnlyFavorites
-                    ? "Ver Todos os Produtos"
-                    : `Meus Favoritos (${favoriteIds.length})`}
-                </span>
-              </button>
+              <SearchFilters
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+                maxPrice={maxPrice}
+                onPriceChange={setMaxPrice}
+                sortBy={sortBy}
+                onSortByChange={setSortBy}
+                categories={dynamicCategories}
+              />
             </div>
+          )}
+        </div>
 
-            <SearchFilters
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-              maxPrice={maxPrice}
-              onPriceChange={setMaxPrice}
-              sortBy={sortBy}
-              onSortByChange={setSortBy}
-              categories={dynamicCategories}
-            />
-          </div>
-        )}
-      </div>
-
-      {/* Grid Dinâmico de Produtos Filtrados */}
-      <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-2">
-        {loading ? (
-          Array.from({ length: 12 }, (_, i) => <ProductSkeleton key={i} />)
-        ) : filteredAndSortedProducts.length === 0 ? (
-          <div className="col-span-full py-16 flex flex-col items-center justify-center text-center gap-2">
-            <span className="text-sm font-bold text-slate-400">
-              Nenhum produto encontrado
-            </span>
-            <p className="text-xs text-slate-600">
-              Tente ajustar os critérios de texto, categoria ou preço máximo.
-            </p>
-          </div>
-        ) : (
-          filteredAndSortedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))
-        )}
+        {/* Grid Dinâmico de Produtos Filtrados */}
+        <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-2">
+          {loading ? (
+            Array.from({ length: 12 }, (_, i) => <ProductSkeleton key={i} />)
+          ) : filteredAndSortedProducts.length === 0 ? (
+            <div className="col-span-full py-16 flex flex-col items-center justify-center text-center gap-2">
+              <span className="text-sm font-bold text-slate-400">
+                Nenhum produto encontrado
+              </span>
+              <p className="text-xs text-slate-600">
+                Tente ajustar os critérios de texto, categoria ou preço máximo.
+              </p>
+            </div>
+          ) : (
+            filteredAndSortedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          )}
+        </div>
       </div>
 
       {/* Drawer do Carrinho */}

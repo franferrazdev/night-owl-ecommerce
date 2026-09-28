@@ -28,7 +28,6 @@ model Product {
   thumbnail String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  orderItems  OrderItem[]
 
   @@map("products")
 }
@@ -73,7 +72,6 @@ model OrderItem {
 
   // Relacionamento muitos-para-um com o Pedido Pai
   orderId String
-  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("order_items")

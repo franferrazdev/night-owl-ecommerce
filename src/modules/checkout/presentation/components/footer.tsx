@@ -15,7 +15,7 @@ export function Footer() {
               size={16}
               className="text-blue-500 dark:text-cyan-400 shrink-0"
             />
-            Night Owl Store
+            Night Owl Ecommerce
           </div>
           <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-relaxed max-w-60">
             Plataforma transacional homologada sob arquitetura limpa Next.js App

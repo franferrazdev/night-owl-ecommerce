@@ -26,11 +26,11 @@ interface LayoutProps {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <html
-      lang="en"
+      lang="pt-BR"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-auto antialiased`}
     >
-      <body className="h-full antialiased m-0 p-0">
+      <body className="h-auto min-h-screen antialiased m-0 p-0 bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 transition-colors duration-200">
         <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
           <Toaster
