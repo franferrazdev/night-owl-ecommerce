@@ -14,8 +14,7 @@ As demonstrações e capturas abaixo ilustram o ecossistema completo em tempo de
 
 #### 1. Catálogo Principal, Vitrine Global e Sliders Interativos
 
-<video src="https://github.com/user-attachments/assets/ebb182e3-5480-406c-a418-62840b423915
-" autoplay loop muted width="100%" title="Navegação Dinâmica do Catálogo"></video>
+<video src="https://github.com/user-attachments/assets/bed9feff-40ff-43e8-8ee2-8edf53db3b6b" autoplay loop muted width="100%" title="Navegação Dinâmica do Catálogo"></video>
 
 #### 2. Carrinho Lateral Atomizado (Zustand Core Store)
 

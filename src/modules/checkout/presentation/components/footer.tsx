@@ -82,8 +82,8 @@ export function Footer() {
         {/* Direitos Autorais */}
         <div className="w-full max-w-5xl flex flex-col sm:flex-row items-center justify-between pt-6 text-[10px] text-slate-400 dark:text-slate-500 font-medium gap-2">
           <span>
-            &copy; {currentYear} Francielle Ferraz &bull; Night Owl Store. Todos
-            os direitos reservados.
+            &copy; {currentYear} Francielle Ferraz &bull; Night Owl Ecommerce.
+            Todos os direitos reservados.
           </span>
           <span className="flex items-center gap-1 uppercase tracking-wider text-[9px] font-bold text-slate-400 dark:text-slate-600">
             Sandbox Core Environment Active
