@@ -1,5 +1,12 @@
 # Night Owl Store - High-Performance Transational E-commerce
 
+![Next.js](https://img.shields.io/badge/Next.js-14-blue?style=flat-square)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+![Zustand](https://img.shields.io/badge/Zustand-v5-purple?style=flat-square)
+[![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)](https://www.prisma.io/)
+[![Supabase](https://img.shields.io/badge/Supabase-181818?style=for-the-badge&logo=supabase&logoColor=3ECF8E)](https://supabase.com/)
+![Tests](https://img.shields.io/badge/tests-Jest%20%7C%20Playwright-green?style=flat-square)
 ![CI](https://img.shields.io/github/actions/workflow/status/franferrazdev/live-coding-bug-quiz/ci.yml?style=flat-square&label=CI%2FCD)
 
 ## 🇧🇷 Versão em Português
@@ -9,6 +16,47 @@ Plataforma completa de e-commerce transacional de alta performance desenvolvida 
 ## 🔗 Demonstração em Tempo Real / Live Demo
 
 👉 **Acesse o sistema no ar:** [Night Owl E-commerce](https://night-owl-ecommerce.vercel.app/)
+
+## 🚀 Como Executar o Projeto Localmente
+
+Siga os passos abaixo para clonar e rodar a plataforma de e-commerce em sua máquina de desenvolvimento:
+
+1. **Clone o repositório:**
+
+   ```bash
+   git clone https://github.com/franferrazdev/night-owl-ecommerce.git
+   cd night-owl-ecommerce
+   ```
+
+2. **Instale as dependências:**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Configure as Variáveis de Ambiente:**
+   Crie um arquivo `.env` na raiz do projeto com base no arquivo `.env.example` e insira suas credenciais secretas do Stripe Sandbox e as strings de conexão do banco de dados (Supabase/PostgreSQL).
+
+4. **Sincronize e Configure o Banco de Dados:**
+   Execute as migrações do Prisma para estruturar as tabelas relacionais de histórico de pedidos no seu banco de dados:
+
+   ```bash
+   npx prisma migrate dev
+   npx prisma generate
+   ```
+
+5. **Inicie o servidor de desenvolvimento:**
+
+   ```bash
+   pnpm dev
+   ```
+
+   Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
+
+6. **Execução de Testes Automatizados:**
+   - **Testes Unitários e de Integração (Jest):** `pnpm test`
+
+---
 
 ### 📸 Galeria de Telas e Demonstrações Animadas (UI/UX)
 
@@ -78,6 +126,18 @@ src/
         ├── infra/  # Server Actions assíncronas para busca de faturamento
 ```
 
+---
+
+## 🧠 Desafios e Aprendizados
+
+O desenvolvimento deste ecossistema completo de e-commerce transacional consolidou competências avançadas em arquitetura de software e segurança cibernética [1.16]:
+
+- **Criptografia na Borda via Web Crypto API:** Implementar autenticação no Client-side utilizando hashes SHA-256 e acoplá-los a Edge Middlewares exigiu o domínio de manipulação de fluxos seguros de sessão, mitigando vulnerabilidades sem adicionar latência de rede na renderização [1.16].
+- **Resiliência e Anti-Fraude no Stripe Sandbox:** Estruturar a validação de checkouts criptografados integrados ao gateway seguro demandou a criação de uma trava antirrepetição baseada em chaves de sessão temporárias [1.16]. Isso impede a duplicação de faturamentos e garante a consistência atômica dos pedidos mesmo em cenários de oscilação de rede [1.16].
+- **Arquitetura Desacoplada com Zustand v5:** Gerenciar o estado dinâmico do carrinho de compras e da lista de desejos através de uma máquina de estados atômica persistida localmente (LocalStorage) eliminou gargalos de re-renderização comuns em contextos reativos, otimizando drasticamente os frames de animação do layout [1.16].
+
+---
+
 ### 📝 Licença e Direitos Autorais
 
 AMbiente Sandbox desenvolvido e homologado integralmente por **Francielle Ferraz**. Todos os direitos de propriedade intelectual reservados.
@@ -91,6 +151,47 @@ A complete high-performance transactional e-commerce platform built with Next.js
 ## 🔗 Live Demo
 
 👉 **Access the system online:** [Night Owl E-commerce](https://night-owl-ecommerce.vercel.app/)
+
+## 🚀 How to Run Locally
+
+Follow the standard setup to clone and run the e-commerce platform locally:
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/franferrazdev/night-owl-ecommerce.git
+   cd night-owl-ecommerce
+   ```
+
+2. **Install dependencies:**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Configure Environment Variables:**
+   Set up your `.env` file using `.env.example` as a template, adding your Stripe Sandbox and Supabase/PostgreSQL credentials.
+
+4. **Sync and Configure the Database:**
+   Run Prisma migrations:
+
+   ```bash
+   npx prisma migrate dev
+   npx prisma generate
+   ```
+
+5. **Run the development server:**
+
+   ```bash
+   pnpm dev
+   ```
+
+   Access [http://localhost:3000](http://localhost:3000) in your browser.
+
+6. **Run Tests:**
+   - **Jest:** `pnpm test`
+
+---
 
 ### 📸 Interface Gallery and Animated Demonstrations (UI/UX)
 
@@ -159,6 +260,18 @@ src/
     ├── profile/
         ├── infra/  # Asynchronous Server Actions for billing retrieval
 ```
+
+---
+
+## 🧠 Technical Challenges and Learnings
+
+Building a high-performance transactional e-commerce platform solidified deep client-side security and micro-state management architectural principles [1.16]:
+
+- **Edge Cryptography via Web Crypto API:** Engineering secure client-side authentication pipelines utilizing SHA-256 hashing modules forced a strict mastery of crypto session tokens tied directly to Next.js edge-level middlewares, securing path routing without degrading web vitals performance [1.16].
+- **Transactional Safety with Stripe Sandbox:** Interfacing the secure hosted adquirente checkout structure required a specialized anti-repetition session-key protocol [1.16]. This layer locks double-execution billing traps and tightly guarantees database atomic relational integrity across continuous web requests [1.16].
+- **Decoupled Architecture with Zustand v5:** Modeling the dynamic catalog basket and global wishlist states with standalone, persistent stores (bound to LocalStorage) decoupled rendering frames completely from higher-level component layouts, eliminating unexpected UI lag during heavy catalog filtering [1.16].
+
+---
 
 ### 📝 License & Copyright
 
