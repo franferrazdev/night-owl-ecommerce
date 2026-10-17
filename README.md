@@ -64,7 +64,7 @@ As demonstrações e capturas abaixo ilustram o ecossistema completo em tempo de
 
 #### 1. Catálogo Principal, Vitrine Global e Sliders Interativos
 
-<video src="https://github.com/user-attachments/assets/bed9feff-40ff-43e8-8ee2-8edf53db3b6b" autoplay loop muted width="100%" title="Navegação Dinâmica do Catálogo"></video>
+https://github.com/user-attachments/assets/bed9feff-40ff-43e8-8ee2-8edf53db3b6b
 
 #### 2. Carrinho Lateral Atomizado (Zustand Core Store)
 
@@ -80,8 +80,7 @@ As demonstrações e capturas abaixo ilustram o ecossistema completo em tempo de
 
 #### 5. Configuração de Sucesso Transacional e Automação de Rastreamento
 
-<video src="https://github.com/user-attachments/assets/a33c0642-7fef-49ae-9a2b-95b16bfe03f0
-" autoplay loop muted width="100%" title="Máquina de Estados Logística Sandbox"></video>
+https://github.com/user-attachments/assets/a33c0642-7fef-49ae-9a2b-95b16bfe03f0
 
 #### 6. Histórico de Pedidos e Área do Cliente
 
@@ -199,7 +198,7 @@ The captures and video animations below illustrate the complete ecosystem at run
 
 #### 1. Main Catalog, Global Showcase, and Interactive Sliders
 
-<video src="https://github.com/user-attachments/assets/bed9feff-40ff-43e8-8ee2-8edf53db3b6b" autoplay loop muted width="100%" title="Dynamic Catalog Navigation"></video>
+https://github.com/user-attachments/assets/bed9feff-40ff-43e8-8ee2-8edf53db3b6b
 
 #### 2. Atomized Cart Drawer (Zustand Core Store)
 
@@ -215,7 +214,7 @@ The captures and video animations below illustrate the complete ecosystem at run
 
 #### 5. Transactional Success Confirmation and Tracking Automation
 
-<video src="https://github.com/user-attachments/assets/a33c0642-7fef-49ae-9a2b-95b16bfe03f0" autoplay loop muted width="100%" title="Logistical State Machine Sandbox Animation"></video>
+https://github.com/user-attachments/assets/a33c0642-7fef-49ae-9a2b-95b16bfe03f0
 
 #### 6. Order History and Client Profile Area
 
