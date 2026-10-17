@@ -45,4 +45,6 @@ jobs:
           DATABASE_URL: "postgresql://mock:mock@localhost:5432/mock" # String simulada para compilação isolada segura
 
       - name: Run Unit Test (Jest)
-        run: pnpm test
+        run: |
+          pnpm add -D ts-node --silent
+          pnpm test
