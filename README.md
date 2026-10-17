@@ -1,5 +1,7 @@
 # Night Owl Store - High-Performance Transational E-commerce
 
+![CI](https://img.shields.io/github/actions/workflow/status/franferrazdev/live-coding-bug-quiz/ci.yml?style=flat-square&label=CI%2FCD)
+
 ## 🇧🇷 Versão em Português
 
 Plataforma completa de e-commerce transacional de alta performance desenvolvida com Next.js 16, React 19 e Tailwind CSS v4. O projeto adota princípios rigorosos de Clean Architecture, gerenciamento de estado atomizado com Zustand, proteção de rotas privadas via Edge Middlewares e integração assíncrona com o gateway de pagamentos Stripe Sandbox, utilizando persistência relacional no PostgreSQL via Prisma ORM.
